@@ -217,11 +217,24 @@
         $(function() {
             // Load the standardized header and footer
             $("#header-placeholder").load("header.html", function() {
-                if (typeof initializeHeader === 'function') {
-                    initializeHeader();
-                }
+                console.log("Header loaded successfully");
+                // Explicitly call setupMobileMenu after header loads
                 if (typeof setupMobileMenu === 'function') {
                     setupMobileMenu();
+                    console.log("Mobile menu setup complete");
+                } else {
+                    // If setupMobileMenu isn't available, load header.js
+                    $.getScript("js/header.js", function() {
+                        console.log("header.js loaded successfully");
+                        if (typeof setupMobileMenu === 'function') {
+                            setupMobileMenu();
+                            console.log("Mobile menu setup complete after loading header.js");
+                        }
+                    });
+                }
+                
+                if (typeof initializeHeader === 'function') {
+                    initializeHeader();
                 }
             });
             $("#footer-placeholder").load("footer.html");
