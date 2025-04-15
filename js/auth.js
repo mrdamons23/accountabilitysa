@@ -1,6 +1,7 @@
 /**
  * Accountability SA - Authentication Module
  * Handles user authentication, registration, and session management
+ * Now with Firebase integration for permanent account storage
  */
 
 // Constants
@@ -8,6 +9,40 @@ const AUTH_TOKEN_KEY = 'accountabilitySAToken';
 const USER_DATA_KEY = 'accountabilitySAUser';
 const SESSION_USER_DATA_KEY = 'accountabilitySAUser';
 const REGISTERED_USERS_KEY = 'accountabilitySARegisteredUsers';
+const COOKIE_TOKEN_NAME = 'accountabilitySA_auth';
+const COOKIE_EXPIRY_DAYS = 30; // Default to 30 days
+const USE_FIREBASE = true; // Set to true to use Firebase, false to use local storage only
+
+// Helper functions for cookie management
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "; expires=" + date.toUTCString();
+    document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/; SameSite=Strict";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999; path=/';
+}
+
+// Initialize account recovery check
+document.addEventListener('DOMContentLoaded', function() {
+    // If not using Firebase, try to recover user session from cookies
+    if (!USE_FIREBASE) {
+        AuthService.attemptSessionRecovery();
+    }
+});
 
 // Auth service class
 class AuthService {
@@ -16,10 +51,16 @@ class AuthService {
      * @returns {boolean} Authentication status
      */
     static isAuthenticated() {
+        if (USE_FIREBASE && typeof firebase !== 'undefined') {
+            return firebase.auth().currentUser !== null;
+        }
+        
+        // Fallback to local storage method
         const token = localStorage.getItem(AUTH_TOKEN_KEY);
-        // Also check sessionStorage in case session-only login was used
         const sessionUser = sessionStorage.getItem(SESSION_USER_DATA_KEY);
-        return !!token || !!sessionUser;
+        const cookieToken = getCookie(COOKIE_TOKEN_NAME);
+        
+        return !!token || !!sessionUser || !!cookieToken;
     }
 
     /**
@@ -27,8 +68,36 @@ class AuthService {
      * @returns {Object|null} User object or null if not logged in
      */
     static getCurrentUser() {
-        // Try to get user data from localStorage (persistent) or sessionStorage (temporary)
+        // Check Firebase first if enabled
+        if (USE_FIREBASE && typeof firebase !== 'undefined') {
+            const firebaseUser = firebase.auth().currentUser;
+            if (firebaseUser) {
+                // Create a user object in the format expected by the app
+                return {
+                    id: firebaseUser.uid,
+                    name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                    email: firebaseUser.email,
+                    role: 'citizen', // Default role
+                    avatar: firebaseUser.photoURL || 'images/avatars/sa-flag-default.jpg',
+                    lastLogin: new Date().toISOString(),
+                    isFirebaseUser: true
+                };
+            }
+        }
+        
+        // Fallback to local storage method if Firebase not available or not enabled
         const userData = localStorage.getItem(USER_DATA_KEY) || sessionStorage.getItem(SESSION_USER_DATA_KEY);
+        
+        // If no user data in storage, attempt recovery from cookie
+        if (!userData && this.isAuthenticated()) {
+            this.attemptSessionRecovery();
+            // Try again after recovery attempt
+            const recoveredData = localStorage.getItem(USER_DATA_KEY) || sessionStorage.getItem(SESSION_USER_DATA_KEY);
+            if (recoveredData) {
+                return JSON.parse(recoveredData);
+            }
+        }
+        
         if (!userData) return null;
         
         try {
@@ -57,6 +126,93 @@ class AuthService {
     }
 
     /**
+     * Handle Firebase authentication state changes
+     * @param {Object} firebaseUser Firebase user object
+     */
+    static handleFirebaseAuthChange(firebaseUser) {
+        if (firebaseUser) {
+            // User is signed in, create local user object for compatibility
+            const user = {
+                id: firebaseUser.uid,
+                name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                email: firebaseUser.email,
+                role: 'citizen', // Default role
+                avatar: firebaseUser.photoURL || 'images/avatars/sa-flag-default.jpg',
+                lastLogin: new Date().toISOString(),
+                isFirebaseUser: true
+            };
+            
+            // Store in local storage for offline functionality
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify(user));
+            localStorage.setItem(AUTH_TOKEN_KEY, 'firebase-token');
+            
+            // Also store in cookies for backup
+            setCookie(COOKIE_TOKEN_NAME, `${user.email}:firebase-auth`, COOKIE_EXPIRY_DAYS);
+            
+            // Update UI
+            this.updateAuthUI();
+        } else {
+            // User is signed out, clear local storage
+            localStorage.removeItem(USER_DATA_KEY);
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+            sessionStorage.removeItem(SESSION_USER_DATA_KEY);
+            eraseCookie(COOKIE_TOKEN_NAME);
+            
+            // Update UI
+            this.updateAuthUI();
+        }
+    }
+
+    /**
+     * Attempt to recover user session if localStorage was cleared but cookie exists
+     * @returns {boolean} True if session was recovered, false otherwise
+     */
+    static attemptSessionRecovery() {
+        console.log('Attempting session recovery...');
+        const cookieToken = getCookie(COOKIE_TOKEN_NAME);
+        
+        if (!cookieToken) {
+            console.log('No auth cookie found for recovery');
+            return false;
+        }
+        
+        // Parse the token to extract user email (tokens are in format "email:random-string")
+        const tokenParts = cookieToken.split(':');
+        if (tokenParts.length < 2) {
+            console.log('Invalid auth cookie format');
+            return false;
+        }
+        
+        const userEmail = tokenParts[0];
+        
+        // Check if user exists in registered users
+        const usersJson = localStorage.getItem(REGISTERED_USERS_KEY);
+        if (!usersJson) {
+            console.log('No registered users found for recovery');
+            return false;
+        }
+        
+        try {
+            const registeredUsers = JSON.parse(usersJson);
+            const user = registeredUsers[userEmail];
+            
+            if (!user) {
+                console.log('User not found in registered users');
+                return false;
+            }
+            
+            // Restore user session
+            console.log('Recovering session for:', userEmail);
+            this.storeSession(user, true); // Always store as persistent
+            return true;
+            
+        } catch (e) {
+            console.error('Error during session recovery:', e);
+            return false;
+        }
+    }
+
+    /**
      * Login user
      * @param {string} email User email
      * @param {string} password User password
@@ -68,7 +224,53 @@ class AuthService {
             // Set a loading flag in sessionStorage to prevent redirect loops
             sessionStorage.setItem('authLoading', 'true');
             
-            // Simulate API call delay
+            // If Firebase is enabled, use Firebase Authentication
+            if (USE_FIREBASE && typeof firebase !== 'undefined') {
+                firebase.auth().signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // Clear loading flag
+                        sessionStorage.removeItem('authLoading');
+                        
+                        // Get the user
+                        const firebaseUser = userCredential.user;
+                        
+                        // Create local user object for compatibility
+                        const user = {
+                            id: firebaseUser.uid,
+                            name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+                            email: firebaseUser.email,
+                            role: 'citizen',
+                            avatar: firebaseUser.photoURL || 'images/avatars/sa-flag-default.jpg',
+                            lastLogin: new Date().toISOString(),
+                            isFirebaseUser: true
+                        };
+                        
+                        // Update Firestore with last login
+                        firebase.firestore().collection('users').doc(firebaseUser.uid).update({
+                            lastLogin: new Date().toISOString()
+                        }).catch(err => console.warn('Could not update last login:', err));
+                        
+                        // Store in local storage for offline functionality
+                        this.storeSession(user, rememberMe);
+                        
+                        // Update UI
+                        this.updateAuthUI();
+                        
+                        resolve(user);
+                    })
+                    .catch((error) => {
+                        // Clear loading flag
+                        sessionStorage.removeItem('authLoading');
+                        
+                        // Handle errors
+                        const errorMessage = error.message;
+                        reject(new Error(errorMessage));
+                    });
+                
+                return;
+            }
+            
+            // Fallback to local storage method if Firebase not available
             setTimeout(() => {
                 try {
                     // Clear the loading flag regardless of outcome
@@ -149,48 +351,6 @@ class AuthService {
         });
     }
 
-    // Helper function to store session data
-    static storeSession(user, rememberMe) {
-        // Ensure required user properties are set
-        if (!user.avatar) {
-            user.avatar = 'images/avatars/sa-flag-default.jpg';
-        }
-        
-        // If avatarData exists but avatar doesn't, sync them
-        if (user.avatarData && !user.avatar) {
-            user.avatar = user.avatarData;
-        } else if (user.avatar && !user.avatarData) {
-            // Also keep avatarData in sync with avatar for backwards compatibility
-            user.avatarData = user.avatar;
-        }
-        
-        // Make sure avatar path is absolute if it's relative
-        if (user.avatar && !user.avatar.startsWith('http') && !user.avatar.startsWith('/')) {
-            // Keep the relative path as is, since it's relative to the root
-            console.log('Using avatar path:', user.avatar);
-        }
-        
-        const userDataJson = JSON.stringify(user);
-        const token = 'demo-token-' + Math.random().toString(36).substring(2);
-
-        console.log('Storing user session with rememberMe:', rememberMe);
-        
-        // Clear any loading flags
-        sessionStorage.removeItem('authLoading');
-        
-        if (rememberMe) {
-            localStorage.setItem(USER_DATA_KEY, userDataJson);
-            localStorage.setItem(AUTH_TOKEN_KEY, token);
-        } else {
-            sessionStorage.setItem(SESSION_USER_DATA_KEY, userDataJson);
-            // Store token in localStorage anyway for simplicity in demo, or use sessionStorage
-            localStorage.setItem(AUTH_TOKEN_KEY, token); 
-        }
-        
-        // Update the UI immediately after storing the session
-        this.updateAuthUI();
-    }
-
     /**
      * Register new user
      * @param {Object} userData User registration data
@@ -198,8 +358,61 @@ class AuthService {
      */
     static register(userData) {
         return new Promise((resolve, reject) => {
-            // In a real implementation, this would be an API call
-            // For demo purposes, we simulate a successful registration
+            // If Firebase is enabled, use Firebase Authentication
+            if (USE_FIREBASE && typeof firebase !== 'undefined') {
+                firebase.auth().createUserWithEmailAndPassword(userData.email, userData.password)
+                    .then((userCredential) => {
+                        // Get the user
+                        const firebaseUser = userCredential.user;
+                        
+                        // Update profile
+                        return firebaseUser.updateProfile({
+                            displayName: userData.name,
+                            // Default avatar
+                            photoURL: 'images/avatars/sa-flag-default.jpg'
+                        }).then(() => {
+                            // Create user document in Firestore
+                            return firebase.firestore().collection('users').doc(firebaseUser.uid).set({
+                                name: userData.name,
+                                email: userData.email,
+                                role: 'citizen',
+                                province: userData.province || '',
+                                newsletter: userData.newsletter || false,
+                                registrationDate: new Date().toISOString(),
+                                lastLogin: new Date().toISOString()
+                            });
+                        }).then(() => {
+                            // Create local user object for compatibility
+                            const user = {
+                                id: firebaseUser.uid,
+                                name: userData.name,
+                                email: userData.email,
+                                role: 'citizen',
+                                avatar: 'images/avatars/sa-flag-default.jpg',
+                                registrationDate: new Date().toISOString(),
+                                lastLogin: new Date().toISOString(),
+                                isFirebaseUser: true
+                            };
+                            
+                            // Store in local storage for offline functionality
+                            this.storeSession(user, true);
+                            
+                            // Send email verification
+                            firebaseUser.sendEmailVerification();
+                            
+                            resolve(user);
+                        });
+                    })
+                    .catch((error) => {
+                        // Handle errors
+                        const errorMessage = error.message;
+                        reject(new Error(errorMessage));
+                    });
+                
+                return;
+            }
+            
+            // Fallback to local storage method if Firebase not available
             setTimeout(() => {
                 try {
                     // Check if email is already in use (in a real app, this would be server validation)
@@ -248,226 +461,394 @@ class AuthService {
                     localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registeredUsers));
                     
                     // Store current user in session storage for immediate login
-                    sessionStorage.setItem(SESSION_USER_DATA_KEY, JSON.stringify(user));
-                    
-                    // Generate token and store it (for demo)
-                    const token = 'demo-token-' + Math.random().toString(36).substring(2);
-                    localStorage.setItem(AUTH_TOKEN_KEY, token);
+                    this.storeSession(user, true); // Default to remember me on registration
                     
                     resolve(user);
                 } catch (e) {
                     reject(new Error('Registration failed: ' + e.message));
                 }
-            }, 1000);
+            }, 1500); // Simulate network delay for registration
         });
     }
 
+    // Helper function to store session data
+    static storeSession(user, rememberMe) {
+        // Ensure required user properties are set
+        if (!user.avatar) {
+            user.avatar = 'images/avatars/sa-flag-default.jpg';
+        }
+        
+        // If avatarData exists but avatar doesn't, sync them
+        if (user.avatarData && !user.avatar) {
+            user.avatar = user.avatarData;
+        } else if (user.avatar && !user.avatarData) {
+            // Also keep avatarData in sync with avatar for backwards compatibility
+            user.avatarData = user.avatar;
+        }
+        
+        const userDataJson = JSON.stringify(user);
+        const token = user.isFirebaseUser ? 'firebase-token' : 'demo-token-' + Math.random().toString(36).substring(2);
+        const cookieValue = `${user.email}:${token}`;
+
+        console.log('Storing user session with rememberMe:', rememberMe);
+        
+        // Clear any loading flags
+        sessionStorage.removeItem('authLoading');
+        
+        // Always store in both localStorage and sessionStorage for better persistence
+        localStorage.setItem(USER_DATA_KEY, userDataJson);
+        localStorage.setItem(AUTH_TOKEN_KEY, token);
+        sessionStorage.setItem(SESSION_USER_DATA_KEY, userDataJson);
+        
+        // Always set a cookie as backup authentication mechanism
+        const cookieDays = rememberMe ? COOKIE_EXPIRY_DAYS : 1; // 1 day if not remember me
+        setCookie(COOKIE_TOKEN_NAME, cookieValue, cookieDays);
+        
+        // Update the UI immediately after storing the session
+        this.updateAuthUI();
+        
+        // Create backup of registered users in cookie for potential recovery
+        const registeredUsers = localStorage.getItem(REGISTERED_USERS_KEY);
+        if (registeredUsers) {
+            try {
+                const parsedUsers = JSON.parse(registeredUsers);
+                // Store only emails in cookie for size limitations
+                const userEmails = Object.keys(parsedUsers);
+                if (userEmails.length > 0) {
+                    setCookie('accountabilitySA_usersList', userEmails.join(','), COOKIE_EXPIRY_DAYS);
+                }
+            } catch (e) {
+                console.error('Error backing up user list:', e);
+            }
+        }
+    }
+
     /**
-     * Update user profile
+     * Update user profile data
      * @param {Object} userData Updated user data
-     * @returns {Promise} Promise resolving to updated user data
+     * @returns {Promise} Promise resolving to updated user data or rejection with error
      */
     static updateProfile(userData) {
         return new Promise((resolve, reject) => {
-            // In a real implementation, this would be an API call
-            setTimeout(() => {
-                try {
-                    // Get the existing user data
+            // If Firebase is enabled, use Firebase to update profile
+            if (USE_FIREBASE && typeof firebase !== 'undefined') {
+                const firebaseUser = firebase.auth().currentUser;
+                if (!firebaseUser) {
+                    reject(new Error('You must be logged in to update your profile'));
+                    return;
+                }
+                
+                // Create a batch of promises to update different parts of the profile
+                const promises = [];
+                
+                // Update Firebase Auth display name if provided
+                if (userData.name) {
+                    promises.push(
+                        firebaseUser.updateProfile({
+                            displayName: userData.name
+                        })
+                    );
+                }
+                
+                // Update Firebase Auth photo URL if provided
+                if (userData.avatar) {
+                    promises.push(
+                        firebaseUser.updateProfile({
+                            photoURL: userData.avatar
+                        })
+                    );
+                }
+                
+                // Update user data in Firestore
+                promises.push(
+                    firebase.firestore().collection('users').doc(firebaseUser.uid).update({
+                        ...userData,
+                        lastUpdated: new Date().toISOString()
+                    })
+                );
+                
+                // Execute all promises
+                Promise.all(promises)
+                    .then(() => {
+                        // Create updated user object
+                        const updatedUser = {
+                            id: firebaseUser.uid,
+                            name: userData.name || firebaseUser.displayName,
+                            email: firebaseUser.email,
+                            role: userData.role || 'citizen',
+                            avatar: userData.avatar || firebaseUser.photoURL || 'images/avatars/sa-flag-default.jpg',
+                            lastLogin: new Date().toISOString(),
+                            lastUpdated: new Date().toISOString(),
+                            isFirebaseUser: true
+                        };
+                        
+                        // Update local storage
+                        this.storeSession(updatedUser, true);
+                        
+                        resolve(updatedUser);
+                    })
+                    .catch((error) => {
+                        reject(new Error('Failed to update profile: ' + error.message));
+                    });
+                
+                return;
+            }
+            
+            // Fallback to local storage method if Firebase not available
+            try {
+                // Get current user
                     const currentUser = this.getCurrentUser();
                     if (!currentUser) {
-                        reject(new Error('No user logged in'));
+                    reject(new Error('You must be logged in to update your profile'));
                         return;
                     }
                     
-                    // Merge updated data with existing user data
-                    const updatedUser = { ...currentUser, ...userData };
-                    
-                    // Update the stored user data
-                    if (localStorage.getItem(USER_DATA_KEY)) {
-                        localStorage.setItem(USER_DATA_KEY, JSON.stringify(updatedUser));
-                    } else {
-                        sessionStorage.setItem(SESSION_USER_DATA_KEY, JSON.stringify(updatedUser));
-                    }
-                    
-                    resolve(updatedUser);
-                } catch (e) {
-                    reject(new Error('Profile update failed: ' + e.message));
+                // Get registered users
+                let registeredUsers = {};
+                const usersJson = localStorage.getItem(REGISTERED_USERS_KEY);
+                if (usersJson) {
+                    registeredUsers = JSON.parse(usersJson);
                 }
-            }, 500);
+                
+                // Update user data
+                const updatedUser = { ...registeredUsers[currentUser.email], ...userData };
+                updatedUser.lastUpdated = new Date().toISOString();
+                
+                // Update in registered users list
+                registeredUsers[currentUser.email] = updatedUser;
+                localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registeredUsers));
+                
+                // Also update current session
+                this.storeSession(updatedUser, true);  // Keep as persistent
+                
+                // Resolve with updated user data
+                    resolve(updatedUser);
+                
+            } catch (error) {
+                reject(new Error('Failed to update profile: ' + error.message));
+                }
         });
     }
 
     /**
      * Change user password
-     * @param {string} currentPassword Current password
+     * @param {string} currentPassword Current password for verification
      * @param {string} newPassword New password
-     * @returns {Promise} Promise resolving on success or rejecting with error
+     * @returns {Promise} Promise resolving on success or rejection with error
      */
     static changePassword(currentPassword, newPassword) {
         return new Promise((resolve, reject) => {
-            // In a real implementation, this would be an API call to verify current password and update
-            setTimeout(() => {
-                // For demo, simulate successful password change
-                // In a real app, we would verify the current password against stored hash
-                if (currentPassword === 'password123' || currentPassword === 'demo') {
-                    resolve(true);
-                } else {
-                    reject(new Error('Current password is incorrect'));
+            // If Firebase is enabled, use Firebase to change password
+            if (USE_FIREBASE && typeof firebase !== 'undefined') {
+                const firebaseUser = firebase.auth().currentUser;
+                if (!firebaseUser) {
+                    reject(new Error('You must be logged in to change your password'));
+                    return;
                 }
-            }, 500);
+                
+                // Get user's email for re-authentication
+                const email = firebaseUser.email;
+                
+                // Create credential with current password
+                const credential = firebase.auth.EmailAuthProvider.credential(email, currentPassword);
+                
+                // Re-authenticate user
+                firebaseUser.reauthenticateWithCredential(credential)
+                    .then(() => {
+                        // Password verified, update to new password
+                        return firebaseUser.updatePassword(newPassword);
+                    })
+                    .then(() => {
+                        // Password updated successfully
+                        // Update password change date in Firestore
+                        return firebase.firestore().collection('users').doc(firebaseUser.uid).update({
+                            passwordLastChanged: new Date().toISOString()
+                        });
+                    })
+                    .then(() => {
+                        resolve('Password changed successfully');
+                    })
+                    .catch((error) => {
+                        // Handle errors
+                        reject(new Error('Failed to change password: ' + error.message));
+                    });
+                
+                return;
+            }
+            
+            // Fallback to local storage method if Firebase not available
+            try {
+                // Get current user
+                const currentUser = this.getCurrentUser();
+                if (!currentUser) {
+                    reject(new Error('You must be logged in to change your password'));
+                    return;
+                }
+                
+                // Get registered users
+                let registeredUsers = {};
+                const usersJson = localStorage.getItem(REGISTERED_USERS_KEY);
+                if (usersJson) {
+                    registeredUsers = JSON.parse(usersJson);
+                }
+                
+                const user = registeredUsers[currentUser.email];
+                
+                // Verify current password
+                if (user.password !== currentPassword) {
+                    reject(new Error('Current password is incorrect'));
+                    return;
+                }
+                
+                // Update password
+                user.password = newPassword;
+                user.passwordLastChanged = new Date().toISOString();
+                
+                // Update in registered users list
+                registeredUsers[currentUser.email] = user;
+                localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registeredUsers));
+                
+                // Resolve with success message
+                resolve('Password changed successfully');
+                
+            } catch (error) {
+                reject(new Error('Failed to change password: ' + error.message));
+            }
         });
     }
 
     /**
      * Request password reset
      * @param {string} email User email
-     * @returns {Promise} Promise resolving on success or rejecting with error
+     * @returns {Promise} Promise resolving on success or rejection with error
      */
     static requestPasswordReset(email) {
         return new Promise((resolve, reject) => {
-            // In a real implementation, this would be an API call
+            // If Firebase is enabled, use Firebase to reset password
+            if (USE_FIREBASE && typeof firebase !== 'undefined') {
+                firebase.auth().sendPasswordResetEmail(email)
+                    .then(() => {
+                        resolve('Password reset email sent to ' + email);
+                    })
+                    .catch((error) => {
+                        reject(new Error('Failed to send password reset email: ' + error.message));
+                    });
+                
+                return;
+            }
+            
+            // Fallback to simulated password reset if Firebase not available
             setTimeout(() => {
-                // For demo, simulate successful password reset request for any email
-                resolve(true);
-            }, 500);
+                resolve('Password reset link has been sent to your email (simulated)');
+            }, 1500);
         });
     }
 
     /**
-     * Logout user
+     * Log out the current user
      */
     static logout() {
-        // Clear auth data
+        // If Firebase is enabled, use Firebase to sign out
+        if (USE_FIREBASE && typeof firebase !== 'undefined') {
+            firebase.auth().signOut()
+                .then(() => {
+                    // Clear all local storage
+                    localStorage.removeItem(AUTH_TOKEN_KEY);
+                    localStorage.removeItem(USER_DATA_KEY);
+                    sessionStorage.removeItem(SESSION_USER_DATA_KEY);
+                    eraseCookie(COOKIE_TOKEN_NAME);
+                    
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    console.error('Error signing out:', error);
+                });
+            
+            return;
+        }
+        
+        // Fallback to local storage method if Firebase not available
         localStorage.removeItem(AUTH_TOKEN_KEY);
         localStorage.removeItem(USER_DATA_KEY);
         sessionStorage.removeItem(SESSION_USER_DATA_KEY);
+        eraseCookie(COOKIE_TOKEN_NAME);
+        
+        // Redirect to home page
+        window.location.href = 'index.html';
+        
+        // Update UI
+        this.updateAuthUI();
     }
 
     /**
-     * Check authentication status and redirect if needed
-     * @param {boolean} requiresAuth Whether the current page requires authentication
-     * @param {string} redirectUrl URL to redirect to based on authentication status
+     * Check if user is authenticated and redirect if necessary
+     * @param {boolean} requiresAuth Whether the page requires authentication
+     * @param {string} redirectUrl URL to redirect to if authentication requirement not met
      */
     static checkAuthAndRedirect(requiresAuth, redirectUrl) {
-        // Skip redirection if we're on the login page and it's explicitly flagged
-        if (sessionStorage.getItem('onLoginPage') === 'true') {
-            console.log('On login page with flag, skipping redirects');
-            return;
-        }
+        console.log('Checking auth status for page. Requires auth:', requiresAuth);
         
-        // Check if we're currently in an authentication process to prevent flashing
+        // Check if we're in the process of logging in/out to prevent redirect loops
         if (sessionStorage.getItem('authLoading') === 'true') {
-            console.log('Authentication in progress, skipping redirect');
+            console.log('Auth operation in progress, skipping redirect check');
             return;
         }
         
-        const isAuthenticated = this.isAuthenticated();
+        const isAuth = this.isAuthenticated();
+        console.log('Current auth status:', isAuth);
         
-        // If auth is required but user is not authenticated, redirect to login
-        if (requiresAuth && !isAuthenticated) {
-            console.log('Authentication required but user not logged in. Redirecting to:', redirectUrl || 'login.html');
+        // Try session recovery if not authenticated
+        if (!isAuth && !USE_FIREBASE && this.attemptSessionRecovery()) {
+            console.log('Session recovered successfully');
+            // Re-check authentication after recovery
+            if (requiresAuth && !this.isAuthenticated()) {
             window.location.href = redirectUrl || 'login.html';
+            }
             return;
         }
         
-        // If user is authenticated but on a page meant for non-authenticated users (like login page)
-        if (isAuthenticated && !requiresAuth) {
-            console.log('User already logged in but on non-auth page. Redirecting to:', redirectUrl || 'account.html');
-            window.location.href = redirectUrl || 'account.html';
-            return;
+        if (requiresAuth && !isAuth) {
+            console.log('Authentication required but user not logged in. Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl || 'login.html';
+        } else if (!requiresAuth && isAuth && redirectUrl) {
+            // Optional: redirect if user is logged in but page is for anonymous users
+            // For example, redirect from login page to dashboard if already logged in
+            console.log('User already authenticated. Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
         }
-        
-        // Otherwise, no redirect needed
-        console.log('No redirect needed. Auth status:', isAuthenticated ? 'Authenticated' : 'Not authenticated');
-        
-        // Update UI to match auth state
-        this.updateAuthUI();
     }
 
     /**
      * Update UI elements based on authentication status
      */
     static updateAuthUI() {
-        console.log('Updating auth UI elements');
+        // This function gets called from header.js
+        console.log('updateAuthUI called - handled by header.js');
+        
+        // If we're on a page with header.js, it will handle this.
+        // If there's no header.js integration, we do a basic version here:
+        const isAuth = this.isAuthenticated();
         const user = this.getCurrentUser();
-        const isAuthed = this.isAuthenticated();
         
-        // Update login/account links
-        const accountNavItems = document.querySelectorAll('.account-nav-item');
-        if (accountNavItems.length) {
-            accountNavItems.forEach(item => {
-                if (isAuthed && user) {
-                    console.log('Updating UI for authenticated user:', user.name);
-                    
-                    // Ensure avatar path is correct
-                    const avatarPath = user.avatar || 'images/avatars/sa-flag-default.jpg';
-                    console.log('Using avatar path:', avatarPath);
-                    
-                    // Show account dropdown for logged in users
-                    item.innerHTML = `
-                        <a href="#" class="account-dropdown-toggle">
-                            <img src="${avatarPath}" alt="${user.name}" width="24" height="24" style="border-radius: 50%; margin-right: 5px; object-fit: cover;">
-                            ${user.name.split(' ')[0]}
-                            <i class="fas fa-chevron-down"></i>
-                        </a>
-                        <div class="account-dropdown">
-                            <div class="account-dropdown-header">
-                                <div class="user-info">
-                                    <h4>${user.name}</h4>
-                                    <p>${user.email}</p>
-                                </div>
-                            </div>
-                            <div class="account-dropdown-links">
-                                <a href="account.html"><i class="fas fa-user-circle"></i> My Account</a>
-                                <a href="account.html?tab=contributions"><i class="fas fa-file-signature"></i> My Contributions</a>
-                                <a href="account.html?tab=settings"><i class="fas fa-cog"></i> Settings</a>
-                                <a href="#" class="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Add click event for dropdown toggle
-                    const toggle = item.querySelector('.account-dropdown-toggle');
-                    const dropdown = item.querySelector('.account-dropdown');
-                    
-                    if (toggle && dropdown) {
-                        toggle.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            dropdown.classList.toggle('show');
-                        });
-                        
-                        // Close dropdown when clicking outside
-                        document.addEventListener('click', function(e) {
-                            if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-                                dropdown.classList.remove('show');
-                            }
-                        });
-                    }
-                    
-                    // Add logout event
-                    const logoutLink = item.querySelector('.logout-link');
-                    if (logoutLink) {
-                        logoutLink.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            // Use the global helper function
-                            window.accountabilityLogout();
-                        });
-                    }
-                } else {
-                    console.log('Updating UI for non-authenticated user');
-                    // Show login link for logged out users
-                    item.innerHTML = '<a href="login.html"><i class="fas fa-user-circle"></i> <span class="login-text">Login</span></a>';
-                }
+        // Find all elements with the auth-status-label class
+        const authStatusLabels = document.querySelectorAll('.auth-status-label');
+        if (authStatusLabels.length > 0) {
+            authStatusLabels.forEach(el => {
+                el.textContent = isAuth ? 'Logged In' : 'Not Logged In';
+                el.className = 'auth-status-label ' + (isAuth ? 'logged-in' : 'logged-out');
             });
-        } else {
-            console.warn('No account navigation items found');
         }
         
-        // If ProfileUtils is available, use it to update all profile images
-        if (typeof ProfileUtils !== 'undefined' && typeof ProfileUtils.initProfileImages === 'function') {
-            console.log('Using ProfileUtils to update profile images');
-            ProfileUtils.initProfileImages();
+        // Find user name containers
+        const userNameContainers = document.querySelectorAll('.user-name-container');
+        if (userNameContainers.length > 0 && user) {
+            userNameContainers.forEach(el => {
+                el.textContent = user.name;
+            });
         }
+        
+        // Add any other UI update logic here that's not handled by header.js
     }
 }
 
@@ -539,5 +920,4 @@ window.AuthService = AuthService;
 window.accountabilityLogout = function() {
     console.log('Global logout function called');
     AuthService.logout();
-    window.location.href = 'index.html';
 };
