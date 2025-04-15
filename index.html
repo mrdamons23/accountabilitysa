@@ -208,6 +208,9 @@
                 if (typeof initializeHeader === 'function') {
                     initializeHeader();
                 }
+                if (typeof setupMobileMenu === 'function') {
+                    setupMobileMenu();
+                }
             });
             $("#footer-placeholder").load("footer.html");
         });

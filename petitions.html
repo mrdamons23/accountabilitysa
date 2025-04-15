@@ -225,5 +225,13 @@
 
     <script src="js/main.js"></script>
     <script src="js/petitions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Call setupMobileMenu if it exists
+            if (typeof setupMobileMenu === 'function') {
+                setupMobileMenu();
+            }
+        });
+    </script>
 </body>
 </html> 

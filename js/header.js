@@ -6,7 +6,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Header script loaded');
     initializeHeader();
+    setupMobileMenu();
 });
+
+function setupMobileMenu() {
+    const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
+    const mainNav = document.querySelector('.main-nav');
+    
+    if (mobileMenuIcon && mainNav) {
+        mobileMenuIcon.addEventListener('click', function() {
+            mainNav.classList.toggle('show-mobile');
+            mobileMenuIcon.classList.toggle('active');
+        });
+    }
+}
 
 function initializeHeader() {
     // First check if AuthService is available
