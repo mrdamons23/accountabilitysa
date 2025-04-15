@@ -1,0 +1,530 @@
+/* Corruption Tracker Hero Section */
+.corruption-hero {
+    background: linear-gradient(120deg, #005a3d 0%, #007a4d 40%, #009260 100%);
+    padding: 5rem 2rem;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.corruption-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.8;
+}
+
+.corruption-hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.corruption-hero h1 {
+    font-size: 3.2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.corruption-hero p {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.3rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-separator {
+    width: 80px;
+    height: 3px;
+    background-color: #FFB612;
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .corruption-hero {
+        padding: 4rem 1.5rem;
+    }
+    
+    .corruption-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .corruption-hero p {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .corruption-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .corruption-hero p {
+        font-size: 1rem;
+    }
+}
+
+/* Enhanced Corruption Statistics Section */
+.corruption-stats-section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.corruption-stats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #00573c 0%, #008a5e 100%);
+}
+
+.corruption-stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.corruption-stats-heading {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.corruption-stats-heading h2 {
+    font-size: 42px;
+    color: #00573c;
+    margin-bottom: 15px;
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+}
+
+.corruption-stats-heading h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #ffc107;
+}
+
+.corruption-stats-heading p {
+    font-size: 18px;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.corruption-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.corruption-stat-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.corruption-stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.corruption-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+}
+
+/* Custom colors for each card */
+.corruption-stat-card.cases-active::before {
+    background-color: #00573c;
+}
+
+.corruption-stat-card.funds-misused::before {
+    background-color: #8e44ad;
+}
+
+.corruption-stat-card.cases-resolved::before {
+    background-color: #e67e22;
+}
+
+.corruption-stat-card.usd-equivalent::before {
+    background-color: #2980b9;
+}
+
+.corruption-stat-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 87, 60, 0.1);
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.funds-misused .corruption-stat-icon {
+    background-color: rgba(142, 68, 173, 0.1);
+}
+
+.cases-resolved .corruption-stat-icon {
+    background-color: rgba(230, 126, 34, 0.1);
+}
+
+.usd-equivalent .corruption-stat-icon {
+    background-color: rgba(41, 128, 185, 0.1);
+}
+
+.corruption-stat-icon i {
+    font-size: 36px;
+    color: #00573c;
+}
+
+.funds-misused .corruption-stat-icon i {
+    color: #8e44ad;
+}
+
+.cases-resolved .corruption-stat-icon i {
+    color: #e67e22;
+}
+
+.usd-equivalent .corruption-stat-icon i {
+    color: #2980b9;
+}
+
+.corruption-stat-value {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 5px 0;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.2;
+}
+
+.corruption-stat-label {
+    font-size: 18px;
+    color: #666;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.corruption-stat-info {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+    color: #777;
+    width: 100%;
+}
+
+/* Animation for stat counting */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-animated {
+    animation: countUp 1s ease forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .corruption-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .corruption-stat-value {
+        font-size: 36px;
+    }
+    
+    .corruption-stat-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .corruption-stat-icon i {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 576px) {
+    .corruption-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .corruption-stats-heading h2 {
+        font-size: 32px;
+    }
+    
+    .corruption-stats-heading p {
+        font-size: 16px;
+    }
+}
+
+/* Filter and Sort Controls */
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    gap: 1.5rem;
+    max-width: 1000px;
+    padding: 0 1.5rem;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.sort-controls label {
+    font-weight: 500;
+    color: #555;
+}
+
+.sort-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Updated Case Cards */
+.corruption-case {
+    position: relative;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.corruption-case:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.corruption-case .case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 20px 10px;
+}
+
+.corruption-case .case-title {
+    font-size: 20px;
+    margin: 0 0 8px;
+    font-weight: 700;
+    color: #333;
+}
+
+.case-department, .case-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 13px;
+    margin-right: 10px;
+    margin-bottom: 8px;
+}
+
+.case-department {
+    background-color: rgba(0, 87, 60, 0.1);
+    color: #00573c;
+}
+
+.status-new {
+    background-color: rgba(41, 128, 185, 0.1);
+    color: #2980b9;
+}
+
+.status-ongoing {
+    background-color: rgba(230, 126, 34, 0.1);
+    color: #e67e22;
+}
+
+.status-resolved {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+}
+
+.case-details {
+    padding: 0 20px 15px;
+}
+
+.case-details p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.case-meta {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+}
+
+.case-meta-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.case-meta-item i {
+    margin-right: 8px;
+    color: #00573c;
+}
+
+.case-amount {
+    font-weight: 600;
+}
+
+.case-actions {
+    display: flex;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    gap: 10px;
+}
+
+.case-action-btn {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #555;
+    text-decoration: none;
+}
+
+.case-action-btn:hover {
+    background-color: #e5e5e5;
+}
+
+.case-action-btn i {
+    margin-right: 8px;
+}
+
+.view-article-btn {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 87, 60, 0.1);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #00573c;
+    text-decoration: none;
+}
+
+.view-article-btn:hover {
+    background-color: rgba(0, 87, 60, 0.2);
+}
+
+.view-article-btn i {
+    margin-right: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sort-controls {
+        width: auto;
+        margin-top: 1rem;
+    }
+    
+    .sort-controls select {
+        width: auto;
+    }
+}
+
+/* Animation for new cases */
+@keyframes highlightNew {
+    0% {
+        box-shadow: 0 0 0 rgba(0, 87, 60, 0);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 87, 60, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(0, 87, 60, 0);
+    }
+}
+
+.highlight-new {
+    animation: highlightNew 2s ease-in-out;
+}
+
+/* Removed Chart Container Styles */
+/* .corruption-stats-charts { ... } */
+/* .chart-container { ... } */
+/* @media (max-width: 992px) { ... } */
+/* @media (max-width: 768px) { ... } */ 

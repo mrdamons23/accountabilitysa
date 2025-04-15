@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth and profile scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item">
+                    <a href="#" class="account-dropdown-toggle active">
+                        <img src="images/avatars/sa-flag-default.jpg" alt="User" id="user-avatar-header" width="24" height="24" style="border-radius: 50%; margin-right: 5px;">
+                        <span id="user-name-header">Account</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="account-dropdown">
+                        <div class="account-dropdown-header">
+                            <div class="user-info">
+                                <h4 id="dropdown-user-name">User Name</h4>
+                                <p id="dropdown-user-email">user@example.com</p>
+                            </div>
+                        </div>
+                        <div class="account-dropdown-links">
+                            <a href="account.html"><i class="fas fa-user-circle"></i> My Account</a>
+                            <a href="account.html?tab=contributions"><i class="fas fa-file-signature"></i> My Contributions</a>
+                            <a href="account.html?tab=settings"><i class="fas fa-cog"></i> Settings</a>
+                            <a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+        <div class="profile-header">
+            <div>
+                <h1 class="profile-title">My Account</h1>
+                <p class="profile-subtitle">Manage your profile and account settings</p>
+            </div>
+            <a href="#" class="btn-edit-profile" id="edit-profile-btn">
+                <i class="fas fa-pencil-alt"></i> Edit Profile
+            </a>
+        </div>
+        
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <div class="profile-user-info">
+                    <img src="images/avatars/sa-flag-default.jpg" alt="Profile Avatar" class="profile-avatar" id="sidebar-avatar">
+                    <h3 id="sidebar-name">User Name</h3>
+                    <p id="sidebar-email">user@example.com</p>
+                    <span class="profile-badge" id="sidebar-role">Citizen</span>
+                </div>
+                
+                <ul class="profile-navigation">
+                    <li>
+                        <a href="#dashboard" class="active" data-tab="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#profile" data-tab="profile">
+                            <i class="fas fa-user"></i> Profile Information
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contributions" data-tab="contributions">
+                            <i class="fas fa-file-signature"></i> My Contributions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#activity" data-tab="activity">
+                            <i class="fas fa-history"></i> Activity Log
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" data-tab="settings">
+                            <i class="fas fa-cog"></i> Account Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="sidebar-logout">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="profile-content">
+                <!-- Dashboard Tab -->
+                <div class="profile-section" id="dashboard-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">Dashboard</h2>
+                    </div>
+                    
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-icon">
+                                <i class="fas fa-file-signature"></i>
+                            </div>
+                            <div class="dashboard-card-title">Petitions Signed</div>
+                            <div class="dashboard-card-value" id="dashboard-petitions">0</div>
+                            <a href="petitions.html" class="btn-secondary">
+                                <i class="fas fa-arrow-right"></i> View Petitions
+                            </a>
+                        </div>
+                        
+                        <div class="dashboard-card purple">
+                            <div class="dashboard-card-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="dashboard-card-title">Petitions Created</div>
+                            <div class="dashboard-card-value" id="dashboard-created-petitions">0</div>
+                            <div class="card-button-group">
+                                <a href="manage-petitions.html" class="btn-secondary">
+                                    <i class="fas fa-list"></i> View Created
+                                </a>
+                                <a href="petitions.html#create-petition-section" class="btn-secondary">
+                                    <i class="fas fa-plus"></i> Create New
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card blue">
+                            <div class="dashboard-card-icon">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <div class="dashboard-card-title">Comments</div>
+                            <div class="dashboard-card-value" id="dashboard-comments">0</div>
+                            <a href="#activity" class="btn-secondary">
+                                <i class="fas fa-history"></i> View Activity
+                            </a>
+                        </div>
+                        
+                        <div class="dashboard-card gold">
+                            <div class="dashboard-card-icon">
+                                <i class="fas fa-donate"></i>
+                            </div>
+                            <div class="dashboard-card-title">Funds Contributed</div>
+                            <div class="dashboard-card-value" id="dashboard-tracked">R 0.00</div>
+                            <a href="#" class="btn-secondary" id="donate-button">
+                                <i class="fas fa-hand-holding-heart"></i> Make a Donation
+                            </a>
+                        </div>
+                        
+                        <div class="dashboard-card green">
+                            <div class="dashboard-card-icon">
+                                <i class="fas fa-vote-yea"></i>
+                            </div>
+                            <div class="dashboard-card-title">Sentiment Votes</div>
+                            <div class="dashboard-card-value" id="sentiment-votes-value">0</div>
+                            <a href="public-sentiment.html" class="btn-secondary">
+                                <i class="fas fa-chart-bar"></i> View Sentiments
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    
+                    <ul class="activity-list" id="dashboard-activity">
+                        <li class="activity-item">
+                            <div class="activity-date">Just now</div>
+                            <div class="activity-content">Loading your activity...</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Profile Information Tab -->
+                <div class="profile-section" id="profile-section" style="display: none;">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">Profile Information</h2>
+                    </div>
+                    
+                    <form class="profile-form" id="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-display-name">Display Name</label>
+                                <input type="text" id="profile-display-name" name="displayName">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profile-email">Email Address</label>
+                            <input type="email" id="profile-email" name="email" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-province">Province</label>
+                                <select id="profile-province" name="province">
+                                    <option value="" disabled>Select your province</option>
+                                    <option value="eastern-cape">Eastern Cape</option>
+                                    <option value="free-state">Free State</option>
+                                    <option value="gauteng">Gauteng</option>
+                                    <option value="kwazulu-natal">KwaZulu-Natal</option>
+                                    <option value="limpopo">Limpopo</option>
+                                    <option value="mpumalanga">Mpumalanga</option>
+                                    <option value="northern-cape">Northern Cape</option>
+                                    <option value="north-west">North West</option>
+                                    <option value="western-cape">Western Cape</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-city">City/Town</label>
+                                <input type="text" id="profile-city" name="city">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="profile-bio">About Me</label>
+                            <textarea id="profile-bio" name="bio" rows="4" placeholder="Tell us about yourself and your interest in accountability"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Profile Picture</label>
+                            <div class="profile-avatar-container">
+                                <div class="avatar-preview-container" id="avatar-preview-container">
+                                    <img src="images/avatars/sa-flag-default.jpg" alt="Profile Avatar" id="profile-avatar-preview">
+                                    <div class="avatar-overlay">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                </div>
+                                <div class="avatar-controls">
+                                    <input type="file" id="profile-avatar" name="avatar" accept="image/jpeg, image/png, image/gif, image/webp" style="display: none;">
+                                    <button type="button" id="avatar-upload-btn" class="btn-secondary">
+                                        <i class="fas fa-camera"></i> Upload Photo
+                                    </button>
+                                    <button type="button" id="avatar-remove-btn" class="btn-cancel">
+                                        <i class="fas fa-trash-alt"></i> Remove
+                                    </button>
+                                </div>
+                                <div class="avatar-help-text">
+                                    <p>Upload a square image (JPG or PNG) for best results. Maximum size: 5MB.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button type="button" class="btn-cancel" id="cancel-profile-btn">Cancel</button>
+                            <button type="submit" class="btn-save">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- My Contributions Tab -->
+                <div class="profile-section" id="contributions-section" style="display: none;">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">My Contributions</h2>
+                    </div>
+                    
+                    <div class="contribution-tabs">
+                        <div class="contribution-tab active" data-type="petitions">Petitions</div>
+                        <div class="contribution-tab" data-type="comments">Comments</div>
+                        <div class="contribution-tab" data-type="reports">Reports</div>
+                        <div class="contribution-tab" data-type="manage">Manage Petitions</div>
+                    </div>
+                    
+                    <div id="contributions-content" class="tab-pane">
+                        <h3>My Contributions</h3>
+                        <p>View your activity and contributions on Accountability SA.</p>
+                        
+                        <div class="contribution-section">
+                            <h4><i class="fas fa-file-signature"></i> Signed Petitions</h4>
+                            <div id="signed-petitions-list" class="contribution-list">
+                                <!-- Signed petitions will be loaded here -->
+                                <div class="loading-placeholder">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading signed petitions...
+                                </div>
+                            </div>
+                            <div id="no-signed-petitions" class="empty-state" style="display: none;">
+                                <i class="fas fa-folder-open"></i>
+                                <p>You haven't signed any petitions yet.</p>
+                                <a href="petitions.html" class="btn-secondary">Browse Petitions</a>
+                            </div>
+                        </div>
+
+                        <div class="contribution-section">
+                            <h4><i class="fas fa-plus-circle"></i> Petitions Created</h4>
+                            <div id="created-petitions-list" class="contribution-list">
+                                <!-- Created petitions will be loaded here -->
+                                <div class="loading-placeholder">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading created petitions...
+                                </div>
+                            </div>
+                            <div id="no-created-petitions" class="empty-state" style="display: none;">
+                                <i class="fas fa-folder-open"></i>
+                                <p>You haven't created any petitions yet.</p>
+                                <a href="petitions.html#create-petition-section" class="btn-secondary">Create a Petition</a>
+                            </div>
+                        </div>
+
+                        <div class="contribution-section">
+                            <h4><i class="fas fa-comments"></i> Comments Made</h4>
+                            <div id="comments-list" class="contribution-list">
+                                <!-- Comments will be loaded here -->
+                                 <div class="empty-state">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>Comment history feature coming soon.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="contribution-content" id="manage-content" style="display: none;">
+                        <h3><i class="fas fa-tasks"></i> Manage Your Petitions</h3>
+                        <p>Edit, update, or delete the petitions you've created.</p>
+                        
+                        <div class="petition-management-container">
+                            <div id="manage-petitions-list" class="petition-management-list">
+                                <!-- Petitions will be loaded here with management options -->
+                                <div class="loading-placeholder">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading your petitions...
+                                </div>
+                            </div>
+                            <div id="no-manage-petitions" class="empty-state" style="display: none;">
+                                <i class="fas fa-folder-open"></i>
+                                <p>You haven't created any petitions yet.</p>
+                                <a href="petitions.html#create-petition-section" class="btn-primary">Create Your First Petition</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contribution-content" id="reports-content" style="display: none;">
+                        <div class="contribution-list" id="my-reports">
+                            <!-- Will be populated by JavaScript -->
+                            <div class="empty-state" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-flag" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                <h3>No Reports Yet</h3>
+                                <p>You haven't submitted any reports yet. Help us track corruption and accountability issues.</p>
+                                <a href="corruption-tracker.html" class="btn-auth secondary" style="width: auto; display: inline-block; margin-top: 1rem;">
+                                    Report an Issue
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity Log Tab -->
+                <div class="profile-section" id="activity-section" style="display: none;">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">Activity Log</h2>
+                    </div>
+                    
+                    <ul class="activity-list" id="activity-log">
+                        <!-- Will be populated by JavaScript -->
+                        <li class="activity-item">
+                            <div class="activity-date" id="account-created-date">April 3, 2024</div>
+                            <div class="activity-content">Account created</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Account Settings Tab -->
+                <div class="profile-section" id="settings-section" style="display: none;">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">Account Settings</h2>
+                    </div>
+                    
+                    <div class="profile-section-header">
+                        <h3>Notification Preferences</h3>
+                    </div>
+                    
+                    <div class="notification-settings">
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive updates and alerts via email</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="email-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h4>Petition Updates</h4>
+                                <p>Get notified about petitions you've signed</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="petition-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h4>Department Updates</h4>
+                                <p>Get notified about changes in departments you're tracking</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="department-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h4>Newsletter</h4>
+                                <p>Receive our weekly newsletter with accountability news</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="newsletter-notifications">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section-header">
+                        <h3>Password</h3>
+                    </div>
+                    
+                    <form class="profile-form" id="password-form">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" name="currentPassword" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" name="newPassword" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" name="confirmNewPassword" required>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button type="submit" class="btn-save">Update Password</button>
+                        </div>
+                    </form>
+                    
+                    <div class="profile-section-header">
+                        <h3>Delete Account</h3>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <p>Once you delete your account, there is no going back. Please be certain.</p>
+                    </div>
+                    
+                    <button type="button" class="btn-cancel" id="delete-account-btn" style="background-color: #ffebee; border-color: #e57373; color: #d32f2f;">
+                        Delete My Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/account.js"></script>
+    <script src="js/petitions.js"></script>
+    <script src="js/sentiment.js"></script>
+    
+    <script>
+        // Direct fix for profile image upload
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM ready, setting up direct avatar upload handler');
+            
+            // Get references to elements
+            const avatarInput = document.getElementById('profile-avatar');
+            const uploadBtn = document.getElementById('avatar-upload-btn');
+            const removeBtn = document.getElementById('avatar-remove-btn');
+            const previewImg = document.getElementById('profile-avatar-preview');
+            const headerImg = document.getElementById('user-avatar-header');
+            const sidebarImg = document.getElementById('sidebar-avatar');
+            
+            if (!avatarInput || !uploadBtn) {
+                console.error('Required elements for avatar upload not found!');
+                return;
+            }
+            
+            // Remove existing event handlers to avoid conflicts
+            const newUploadBtn = uploadBtn.cloneNode(true);
+            uploadBtn.parentNode.replaceChild(newUploadBtn, uploadBtn);
+            const newAvatarInput = avatarInput.cloneNode(true);
+            avatarInput.parentNode.replaceChild(newAvatarInput, avatarInput);
+            
+            // Get references to new elements
+            const uploadButton = document.getElementById('avatar-upload-btn');
+            const fileInput = document.getElementById('profile-avatar');
+            
+            // Attach click handler to upload button
+            uploadButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Upload button clicked, opening file dialog');
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function(e) {
+                console.log('File selected for upload:', this.files[0]?.name || 'none');
+                if (!this.files || !this.files[0]) return;
+                
+                const file = this.files[0];
+                
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    return;
+                }
+                
+                // Create FileReader to read the image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    console.log('File read successfully, updating images');
+                    
+                    // Update all avatar images
+                    if (previewImg) previewImg.src = imageData;
+                    if (headerImg) headerImg.src = imageData;
+                    if (sidebarImg) sidebarImg.src = imageData;
+                    
+                    // Update user data in storage
+                    const userData = localStorage.getItem('accountabilitySAUser') || 
+                                    sessionStorage.getItem('accountabilitySAUser');
+                    
+                    if (userData) {
+                        try {
+                            const user = JSON.parse(userData);
+                            user.avatar = imageData;
+                            
+                            // Save to storage
+                            if (localStorage.getItem('accountabilitySAUser')) {
+                                localStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                            } else {
+                                sessionStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                            }
+                            
+                            console.log('Avatar saved to user data');
+                            alert('Profile picture updated successfully!');
+                        } catch (error) {
+                            console.error('Error updating user data:', error);
+                            alert('Error saving profile picture. Please try again.');
+                        }
+                    }
+                };
+                
+                reader.onerror = function() {
+                    console.error('Error reading file');
+                    alert('Error reading the selected file. Please try again.');
+                };
+                
+                reader.readAsDataURL(file);
+            });
+            
+            // Handle remove button
+            if (removeBtn) {
+                removeBtn.addEventListener('click', function() {
+                    const defaultAvatar = 'images/avatars/sa-flag-default.jpg';
+                    
+                    // Update all avatar images
+                    if (previewImg) previewImg.src = defaultAvatar;
+                    if (headerImg) headerImg.src = defaultAvatar;
+                    if (sidebarImg) sidebarImg.src = defaultAvatar;
+                    
+                    // Update user data
+                    const userData = localStorage.getItem('accountabilitySAUser') || 
+                                   sessionStorage.getItem('accountabilitySAUser');
+                    
+                    if (userData) {
+                        try {
+                            const user = JSON.parse(userData);
+                            user.avatar = defaultAvatar;
+                            
+                            // Save to storage
+                            if (localStorage.getItem('accountabilitySAUser')) {
+                                localStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                            } else {
+                                sessionStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                            }
+                            
+                            alert('Profile picture removed');
+                        } catch (error) {
+                            console.error('Error updating user data:', error);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check auth status
+            function checkAuthStatus() {
+                const user = JSON.parse(localStorage.getItem('accountabilitySAUser') || sessionStorage.getItem('accountabilitySAUser') || 'null');
+                const token = localStorage.getItem('accountabilitySAToken');
+                
+                if (!user || !token) {
+                    // User is not logged in, redirect to login page
+                    window.location.href = 'login.html';
+                    return null;
+                }
+                
+                return user;
+            }
+            
+            // Get current user
+            const currentUser = checkAuthStatus();
+            if (!currentUser) return;
+            
+            // Populate user information
+            function populateUserInfo(user) {
+                // Header
+                document.getElementById('user-name-header').textContent = user.name.split(' ')[0];
+                document.getElementById('dropdown-user-name').textContent = user.name;
+                document.getElementById('dropdown-user-email').textContent = user.email;
+                
+                // Sidebar
+                document.getElementById('sidebar-name').textContent = user.name;
+                document.getElementById('sidebar-email').textContent = user.email;
+                document.getElementById('sidebar-role').textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                
+                if (user.avatar) {
+                    document.getElementById('user-avatar-header').src = user.avatar;
+                    document.getElementById('sidebar-avatar').src = user.avatar;
+                    document.getElementById('profile-avatar-preview').src = user.avatar;
+                }
+                
+                // Profile form
+                document.getElementById('profile-name').value = user.name;
+                document.getElementById('profile-display-name').value = user.displayName || user.name.split(' ')[0];
+                document.getElementById('profile-email').value = user.email;
+                if (user.province) {
+                    document.getElementById('profile-province').value = user.province;
+                }
+                if (user.city) {
+                    document.getElementById('profile-city').value = user.city;
+                }
+                if (user.bio) {
+                    document.getElementById('profile-bio').value = user.bio;
+                }
+                
+                // Activity date
+                const registrationDate = user.registrationDate ? new Date(user.registrationDate) : new Date();
+                document.getElementById('account-created-date').textContent = registrationDate.toLocaleDateString('en-ZA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Notification settings
+                document.getElementById('newsletter-notifications').checked = user.newsletter || false;
+            }
+            
+            populateUserInfo(currentUser);
+            
+            // Account dropdown toggle
+            const accountToggle = document.querySelector('.account-dropdown-toggle');
+            const accountDropdown = document.querySelector('.account-dropdown');
+            
+            accountToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                accountDropdown.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!accountToggle.contains(e.target) && !accountDropdown.contains(e.target)) {
+                    accountDropdown.classList.remove('show');
+                }
+            });
+            
+            // Tab navigation
+            const navLinks = document.querySelectorAll('.profile-navigation a[data-tab]');
+            const sections = document.querySelectorAll('.profile-section');
+            
+            function showSection(tabId) {
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                document.getElementById(`${tabId}-section`).style.display = 'block';
+                document.querySelector(`.profile-navigation a[data-tab="${tabId}"]`).classList.add('active');
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab');
+                    showSection(tabId);
+                    
+                    // Update URL hash without scrolling
+                    history.pushState(null, null, `#${tabId}`);
+                });
+            });
+            
+            // Check URL hash for tab
+            function checkUrlHash() {
+                const hash = window.location.hash.substring(1);
+                if (hash && document.querySelector(`.profile-navigation a[data-tab="${hash}"]`)) {
+                    showSection(hash);
+                }
+            }
+            
+            checkUrlHash();
+            window.addEventListener('hashchange', checkUrlHash);
+            
+            // Profile form submission
+            const profileForm = document.getElementById('profile-form');
+            
+            profileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('profile-name').value.trim();
+                const displayName = document.getElementById('profile-display-name').value.trim();
+                const email = document.getElementById('profile-email').value.trim();
+                const province = document.getElementById('profile-province').value;
+                const city = document.getElementById('profile-city').value.trim();
+                const bio = document.getElementById('profile-bio').value.trim();
+                
+                // Update user data
+                const updatedUser = {
+                    ...currentUser,
+                    name,
+                    displayName,
+                    email,
+                    province,
+                    city,
+                    bio
+                };
+                
+                // Save to storage
+                if (localStorage.getItem('accountabilitySAUser')) {
+                    localStorage.setItem('accountabilitySAUser', JSON.stringify(updatedUser));
+                } else {
+                    sessionStorage.setItem('accountabilitySAUser', JSON.stringify(updatedUser));
+                }
+                
+                // Update UI
+                populateUserInfo(updatedUser);
+                
+                // Show success message
+                alert('Profile updated successfully!');
+                
+                // Go back to dashboard
+                showSection('dashboard');
+            });
+            
+            // Password form submission
+            const passwordForm = document.getElementById('password-form');
+            
+            passwordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-new-password').value;
+                
+                // Validation (simple for demo)
+                if (newPassword.length < 6) {
+                    alert('Password must be at least 6 characters long');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match');
+                    return;
+                }
+                
+                // In a real app, this would be an API call to verify current password and update
+                // For demo, we'll just show success
+                alert('Password updated successfully!');
+                
+                // Reset form
+                passwordForm.reset();
+            });
+            
+            // Edit profile button
+            document.getElementById('edit-profile-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection('profile');
+            });
+            
+            // Cancel profile edit
+            document.getElementById('cancel-profile-btn').addEventListener('click', function() {
+                // Reset form to original values
+                populateUserInfo(currentUser);
+                
+                // Go back to dashboard
+                showSection('dashboard');
+            });
+            
+            // Delete account button
+            document.getElementById('delete-account-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    // In a real app, this would be an API call
+                    // For demo, we'll just clear local storage and redirect
+                    localStorage.removeItem('accountabilitySAUser');
+                    sessionStorage.removeItem('accountabilitySAUser');
+                    localStorage.removeItem('accountabilitySAToken');
+                    
+                    alert('Your account has been deleted. You will be redirected to the homepage.');
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // Notification toggles
+            const notificationToggles = document.querySelectorAll('.notification-settings input[type="checkbox"]');
+            
+            notificationToggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const setting = this.id;
+                    const isEnabled = this.checked;
+                    
+                    // In a real app, this would update user preferences on server
+                    console.log(`${setting} ${isEnabled ? 'enabled' : 'disabled'}`);
+                    
+                    // For newsletter specifically, update user object
+                    if (setting === 'newsletter-notifications') {
+                        const updatedUser = {
+                            ...currentUser,
+                            newsletter: isEnabled
+                        };
+                        
+                        // Save to storage
+                        if (localStorage.getItem('accountabilitySAUser')) {
+                            localStorage.setItem('accountabilitySAUser', JSON.stringify(updatedUser));
+                        } else {
+                            sessionStorage.setItem('accountabilitySAUser', JSON.stringify(updatedUser));
+                        }
+                    }
+                });
+            });
+            
+            // Logout function
+            function logoutUser() {
+                // Use our global helper if available, otherwise fall back to the current implementation
+                if (window.accountabilityLogout) {
+                    window.accountabilityLogout();
+                } else {
+                    // Original logout code as fallback
+                    console.log('Logging out user...');
+                localStorage.removeItem('accountabilitySAToken');
+                sessionStorage.removeItem('accountabilitySAUser');
+                localStorage.removeItem('accountabilitySAUser');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+                }
+            }
+            
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                logoutUser();
+            });
+            
+            document.getElementById('sidebar-logout').addEventListener('click', function(e) {
+                e.preventDefault();
+                logoutUser();
+            });
+        });
+    </script>
+</body>
+</html> 

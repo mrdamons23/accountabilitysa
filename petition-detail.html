@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petition | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/petitions.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html" class="active">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="petition-detail-container">
+        <div class="petition-breadcrumbs">
+            <a href="petitions.html">Petitions</a> <i class="fas fa-chevron-right"></i> <span id="petition-title-bread">Petition Title</span>
+        </div>
+        
+        <section class="petition-hero" id="petition-hero">
+            <!-- Will be populated by JavaScript -->
+        </section>
+        
+        <div class="petition-detail-layout">
+            <div class="petition-detail-main">
+                <section class="petition-about">
+                    <h2 class="section-title">About this petition</h2>
+                    <div id="petition-description">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </section>
+                
+                <section class="petition-updates">
+                    <h2 class="section-title">Updates</h2>
+                    <div id="petition-updates-list">
+                        <div class="petition-update">
+                            <div class="update-date">
+                                <div class="update-day">18</div>
+                                <div class="update-month">Apr</div>
+                            </div>
+                            <div class="update-content">
+                                <h3>Petition launched</h3>
+                                <p>We've officially launched this petition on Accountability SA. Help us reach our target by sharing with friends and family!</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <div class="petition-detail-sidebar">
+                <div class="petition-signing-card">
+                    <div class="signing-card-header">
+                        <div class="petition-progress-container">
+                            <div class="petition-progress-bar">
+                                <div class="petition-progress" id="petition-progress" style="width: 0%;"></div>
+                            </div>
+                            <div class="petition-progress-stats">
+                                <div class="signatures-count">
+                                    <span id="signatures-count">0</span> signatures
+                                </div>
+                                <div class="signatures-goal">
+                                    Goal: <span id="signatures-goal">10,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="signing-card-body">
+                        <div id="petition-sign-section">
+                            <div id="sign-auth-required">
+                                <p>You must be logged in to sign this petition.</p>
+                                <div class="sign-auth-buttons">
+                                    <a href="login.html" class="btn-sign-auth">Log In</a>
+                                    <a href="signup.html" class="btn-sign-auth secondary">Sign Up</a>
+                                </div>
+                            </div>
+                            
+                            <div id="petition-already-signed" style="display: none;">
+                                <div class="already-signed-message">
+                                    <i class="fas fa-check-circle"></i>
+                                    <p>You've signed this petition</p>
+                                </div>
+                                <div class="signed-actions">
+                                    <button class="btn-share-petition"><i class="fas fa-share-alt"></i> Share</button>
+                                    <button class="btn-unsign-petition"><i class="fas fa-times-circle"></i> Unsign</button>
+                                </div>
+                            </div>
+                            
+                            <form id="sign-petition-form" style="display: none;">
+                                <div class="form-group">
+                                    <label for="sign-reason">Why are you signing? (optional)</label>
+                                    <textarea id="sign-reason" name="reason" rows="3" placeholder="Share your reason for supporting this petition..."></textarea>
+                                </div>
+                                <button type="submit" class="btn-sign-petition-now">Sign this petition</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="signing-card-footer">
+                        <div class="petition-deadline">
+                            <i class="fas fa-clock"></i>
+                            <span id="deadline-info">Closing in <span id="days-left">30</span> days</span>
+                        </div>
+                        
+                        <div class="petition-share">
+                            <span>Share:</span>
+                            <a href="#" class="share-btn facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="share-btn twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" class="share-btn email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="petition-author-card">
+                    <div class="author-info">
+                        <img src="images/logo.png" alt="Accountability SA" class="author-image">
+                        <div>
+                            <h3>Started by</h3>
+                            <p id="petition-author">Accountability SA</p>
+                        </div>
+                    </div>
+                    <p class="author-description">This petition is an official initiative of Accountability SA, an organization dedicated to transparency and governance improvement in South Africa.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Modal (Shown after signing) -->
+        <div class="success-modal" id="success-modal">
+            <div class="success-modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="success-modal-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Thank You for Signing!</h3>
+                </div>
+                <p>Your signature has been counted. Help this petition reach its goal by sharing it with others.</p>
+                <div class="success-share-buttons">
+                    <a href="#" class="share-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" class="share-btn twitter"><i class="fab fa-twitter"></i> Twitter</a>
+                    <a href="#" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                    <a href="#" class="share-btn email"><i class="fas fa-envelope"></i> Email</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Login Required Modal -->
+        <div class="auth-modal" id="auth-modal">
+            <div class="auth-modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="auth-modal-header">
+                    <i class="fas fa-user-lock"></i>
+                    <h3>Account Required</h3>
+                </div>
+                <p>You need to be logged in to sign petitions or leave comments. This helps us ensure petition integrity and prevents duplicate signatures.</p>
+                <div class="auth-modal-buttons">
+                    <a href="login.html" class="btn-auth-modal">Log In</a>
+                    <a href="signup.html" class="btn-auth-modal secondary">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/petitions.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load petition details based on URL parameter
+            loadPetitionDetails();
+        });
+    </script>
+    <script src="js/footer.js"></script>
+</body>
+</html> 
+

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page loader overlay */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+        }
+        .page-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 122, 77, 0.2);
+            border-radius: 50%;
+            border-top-color: rgba(0, 122, 77, 1);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <!-- Page loader -->
+    <div class="page-loader" id="page-loader">
+        <div class="spinner"></div>
+    </div>
+
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html" class="active"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <section class="auth-card">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Log in to your account to access all features</p>
+            </div>
+            
+            <div id="error-container"></div>
+            
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="remember-me" name="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="btn-auth primary">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="social-auth-buttons">
+                <a href="#" class="social-auth-btn google" id="google-signin">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="#" class="social-auth-btn facebook" id="facebook-signin">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageLoader = document.getElementById('page-loader');
+            const loginForm = document.getElementById('login-form');
+            const errorContainer = document.getElementById('error-container');
+            const googleSignIn = document.getElementById('google-signin');
+            const facebookSignIn = document.getElementById('facebook-signin');
+            
+            // Function to hide page loader when everything is ready
+            function hideLoader() {
+                if (pageLoader) {
+                    pageLoader.classList.add('hidden');
+                    // Remove completely after transition
+                    setTimeout(() => {
+                        pageLoader.remove();
+                    }, 300);
+                }
+            }
+            
+            // Simple check - don't do complex redirects on login page
+            if (window.location.pathname.endsWith('login.html')) {
+                // Set flag to prevent auto-redirect logic from auth.js
+                sessionStorage.setItem('onLoginPage', 'true');
+                
+                // Simple check - only redirect if user is definitely logged in
+                // This prevents redirect loops
+                const userData = localStorage.getItem('accountabilitySAUser') || 
+                                 sessionStorage.getItem('accountabilitySAUser');
+                const token = localStorage.getItem('accountabilitySAToken');
+                
+                if (userData && token) {
+                    console.log('User already logged in, redirecting to account page');
+                    window.location.href = 'account.html';
+                    return; // Stop execution
+                }
+                
+                // If we get here, user is not logged in so show the login page
+                hideLoader();
+            } else {
+                // Not on login page, remove the flag
+                sessionStorage.removeItem('onLoginPage');
+                hideLoader();
+            }
+            
+            // Clear any hanging auth flags
+            sessionStorage.removeItem('authLoading');
+            
+            // Form validation and submission
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Clear previous errors
+                    errorContainer.innerHTML = '';
+                    
+                    const emailInput = document.getElementById('email');
+                    const passwordInput = document.getElementById('password');
+                    const rememberMe = document.getElementById('remember-me').checked;
+                    
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
+                    
+                    // Validate email format
+                    if (!isValidEmail(email)) {
+                        showError('Please enter a valid email address.');
+                        emailInput.focus();
+                        return;
+                    }
+                    
+                    // Validate password
+                    if (password.length < 6) {
+                        showError('Password must be at least 6 characters.');
+                        passwordInput.focus();
+                        return;
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+                    
+                    try {
+                        // Manual login rather than using AuthService
+                        loginUserDirectly(email, password, rememberMe)
+                            .then(user => {
+                                submitBtn.innerHTML = '<i class="fas fa-check"></i> Success! Redirecting...';
+                                console.log('Login successful:', user.name);
+                                setTimeout(() => {
+                                    window.location.href = 'account.html';
+                                }, 500);
+                            })
+                            .catch(err => {
+                                // Restore button state
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = originalBtnText;
+                                
+                                // Show error
+                                showError(err.message || 'Login failed. Please try again.');
+                            });
+                    } catch (err) {
+                        // Fallback error handling
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        showError('An unexpected error occurred. Please try again.');
+                        console.error('Login error:', err);
+                    }
+                });
+            }
+            
+            // Email validation helper
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            // Show error message
+            function showError(message) {
+                if (errorContainer) {
+                    errorContainer.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>${message}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Direct login function to avoid redirection loops
+            function loginUserDirectly(email, password, rememberMe) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        try {
+                            // First check demo user
+                            if (email === 'demo@accountabilitysa.org' && password === 'password123') {
+                                const user = {
+                                    id: '12345',
+                                    name: 'Demo User',
+                                    email: email,
+                                    role: 'citizen',
+                                    avatar: 'images/avatars/sa-flag-default.jpg',
+                                    lastLogin: new Date().toISOString()
+                                };
+                                
+                                storeUserSession(user, rememberMe);
+                                resolve(user);
+                                return;
+                            }
+                            
+                            // Check registered users
+                            const usersJson = localStorage.getItem('accountabilitySARegisteredUsers');
+                            if (usersJson) {
+                                const users = JSON.parse(usersJson);
+                                const user = users[email];
+                                
+                                if (user && user.password === password) {
+                                    user.lastLogin = new Date().toISOString();
+                                    users[email] = user;
+                                    localStorage.setItem('accountabilitySARegisteredUsers', 
+                                                        JSON.stringify(users));
+                                    
+                                    storeUserSession(user, rememberMe);
+                                    resolve(user);
+                                    return;
+                                }
+                            }
+                            
+                            // If we get here, login failed
+                            reject(new Error('Invalid email or password'));
+                        } catch (err) {
+                            console.error('Login error:', err);
+                            reject(new Error('Login failed. Please try again.'));
+                        }
+                    }, 800);
+                });
+            }
+            
+            // Store user session helper
+            function storeUserSession(user, rememberMe) {
+                // Make sure avatar exists
+                if (!user.avatar) {
+                    user.avatar = 'images/avatars/sa-flag-default.jpg';
+                }
+                
+                const userJson = JSON.stringify(user);
+                const token = 'demo-token-' + Math.random().toString(36).substring(2);
+                
+                if (rememberMe) {
+                    localStorage.setItem('accountabilitySAUser', userJson);
+                } else {
+                    sessionStorage.setItem('accountabilitySAUser', userJson);
+                }
+                
+                localStorage.setItem('accountabilitySAToken', token);
+            }
+            
+            // Social login handlers 
+            if (googleSignIn) {
+                googleSignIn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Google Sign In would be implemented with Google OAuth');
+                });
+            }
+            
+            if (facebookSignIn) {
+                facebookSignIn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Facebook Sign In would be implemented with Facebook OAuth');
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

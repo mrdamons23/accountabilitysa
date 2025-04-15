@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Your Petitions | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth and profile scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item">
+                    <a href="#" class="account-dropdown-toggle">
+                        <img src="images/avatars/sa-flag-default.jpg" alt="User" id="user-avatar-header" width="24" height="24" style="border-radius: 50%; margin-right: 5px;">
+                        <span id="user-name-header">Account</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </a>
+                    <div class="account-dropdown">
+                        <div class="account-dropdown-header">
+                            <div class="user-info">
+                                <h4 id="dropdown-user-name">User Name</h4>
+                                <p id="dropdown-user-email">user@example.com</p>
+                            </div>
+                        </div>
+                        <div class="account-dropdown-links">
+                            <a href="account.html"><i class="fas fa-user-circle"></i> My Account</a>
+                            <a href="account.html?tab=contributions"><i class="fas fa-file-signature"></i> My Contributions</a>
+                            <a href="account.html?tab=settings"><i class="fas fa-cog"></i> Settings</a>
+                            <a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="manage-petitions-container">
+        <div class="page-header">
+            <h1>Manage Your Petitions</h1>
+            <p>View, edit, or delete the petitions you've created</p>
+            <div class="page-actions">
+                <a href="petitions.html#create-petition-section" class="btn-primary">
+                    <i class="fas fa-plus"></i> Create New Petition
+                </a>
+                <a href="account.html" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="petitions-management-wrapper">
+            <div id="petitions-management-list" class="petition-management-list">
+                <!-- Petitions will be loaded here with management options -->
+                <div class="loading-placeholder">
+                    <i class="fas fa-spinner fa-spin"></i> Loading your petitions...
+                </div>
+            </div>
+            
+            <div id="no-petitions" class="empty-state" style="display: none;">
+                <i class="fas fa-folder-open"></i>
+                <h3>No Petitions Found</h3>
+                <p>You haven't created any petitions yet.</p>
+                <a href="petitions.html#create-petition-section" class="btn-primary">Create Your First Petition</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript for Manage Petitions page -->
+    <script src="js/manage-petitions.js"></script>
+    <script src="js/petitions.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,1221 @@
+/* Budget Monitor Styles */
+
+/* Budget Hero Styles */
+.budget-hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-separator {
+    width: 80px;
+    height: 3px;
+    background-color: #FFB612;
+    margin: 0 auto 3rem;
+    border-radius: 3px;
+}
+
+/* Enhanced Budget Overview Styling */
+.budget-overview {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.budget-overview::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.budget-overview::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 300px;
+    height: 300px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+}
+
+.overview-container h2 {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    z-index: 1;
+}
+
+.overview-container h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+}
+
+.overview-container p {
+    color: #666;
+    margin-bottom: 2.5rem;
+    max-width: 700px;
+    z-index: 1;
+    position: relative;
+}
+
+.overview-cards {
+    display: grid;
+    /* Adjusted for better spacing, allows 2 or 3 columns */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 2.5rem; /* Increased gap */
+    margin-top: 2rem;
+    z-index: 1;
+    position: relative;
+}
+
+.overview-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 2rem 1.8rem; /* Adjusted padding */
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.overview-card:hover {
+    transform: translateY(-7px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.overview-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    transition: all 0.3s ease;
+    /* Use distinct color gradients for each card type */
+}
+
+/* Assign specific gradients or solid colors if preferred */
+.overview-card:nth-child(1)::before { background: linear-gradient(90deg, #007A4D, #4CAF50); } /* Budget - Green */
+.overview-card:nth-child(2)::before { background: linear-gradient(90deg, #FFB612, #FF9800); } /* Revenue - Orange/Gold */
+.overview-card:nth-child(3)::before { background: linear-gradient(90deg, #DE3831, #F44336); } /* Deficit - Red */
+.overview-card:nth-child(4)::before { background: linear-gradient(90deg, #002395, #2196F3); } /* Debt - Blue */
+.overview-card:nth-child(5)::before { background: linear-gradient(90deg, #9C27B0, #673AB7); } /* Growth - Purple */
+.overview-card:nth-child(6)::before { background: linear-gradient(90deg, #00BCD4, #009688); } /* Grants - Cyan/Teal */
+.overview-card:nth-child(7)::before { background: linear-gradient(90deg, #795548, #A1887F); } /* Inflation - Brown */
+.overview-card:nth-child(8)::before { background: linear-gradient(90deg, #607D8B, #90A4AE); } /* Per Capita - Grey */
+
+.overview-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1.2rem;
+    display: inline-block;
+    /* Apply specific icon colors matching the top border */
+    color: #007A4D; /* Default */
+}
+
+.overview-card:nth-child(1) i { color: #007A4D; } 
+.overview-card:nth-child(2) i { color: #FFB612; }
+.overview-card:nth-child(3) i { color: #DE3831; }
+.overview-card:nth-child(4) i { color: #002395; }
+.overview-card:nth-child(5) i { color: #9C27B0; }
+.overview-card:nth-child(6) i { color: #00BCD4; }
+.overview-card:nth-child(7) i { color: #795548; }
+.overview-card:nth-child(8) i { color: #607D8B; }
+
+/* Remove background gradient from icons */
+.overview-card i {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+.overview-amount {
+    font-size: 2.2rem; /* Slightly reduced size */
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.6rem; /* Increased spacing */
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.overview-label {
+    color: #555; /* Slightly darker text */
+    font-size: 1rem; /* Adjusted size */
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+}
+
+.overview-change {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem; /* Slightly smaller */
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    /* Ensure icons inside also inherit color correctly */
+}
+
+.overview-change i {
+    font-size: 0.85rem !important; /* Match text size */
+    margin-right: 0.4rem;
+    margin-bottom: 0;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+}
+
+.change-positive {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #388E3C; /* Darker green */
+}
+
+.change-positive:hover {
+    background-color: rgba(76, 175, 80, 0.15);
+}
+
+.change-negative {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #D32F2F; /* Darker red */
+}
+
+.change-negative:hover {
+    background-color: rgba(244, 67, 54, 0.15);
+}
+
+/* Specific styling for GDP Growth card if needed */
+.overview-card:nth-child(5) .overview-amount { font-size: 1.8rem; } /* Smaller font for dual values */
+.overview-card:nth-child(5) .overview-label { margin-bottom: 0.6rem; } 
+.overview-card:nth-child(5) .overview-change { font-size: 0.8rem; padding: 0.4rem 0.8rem; } 
+.overview-card:nth-child(5) .overview-change i { font-size: 0.8rem !important; }
+.overview-card:nth-child(5) > .overview-label { /* Target the main label "GDP Growth Analysis" */
+    margin-top: 1rem; 
+    margin-bottom: 0; /* Remove bottom margin */
+    font-size: 1rem;
+}
+
+/* Style for the source link icon */
+.source-link {
+    position: absolute;
+    top: 10px; /* Adjusted slightly */
+    right: 10px; /* Adjusted slightly */
+    color: #aaa; 
+    font-size: 0.7rem; /* Made smaller */
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    z-index: 2; 
+    display: inline-flex; 
+    align-items: center;
+    background-color: rgba(240, 240, 240, 0.7); 
+    padding: 2px 5px; /* Reduced padding */
+    border-radius: 3px; /* Slightly smaller radius */
+}
+
+.source-link:hover {
+    color: var(--primary-color); 
+    background-color: rgba(0, 122, 77, 0.1);
+}
+
+.source-link i {
+    margin-right: 3px; /* Reduced space */
+    font-size: 0.65rem; /* Made smaller */
+}
+
+/* Enhanced Budget Visualizations Section */
+.budget-visualizations {
+    padding: 4rem 0;
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+.visualizations-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.visualizations-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.visualizations-header h2 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    display: inline-block;
+}
+
+.visualizations-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 4px;
+    background-color: var(--accent-color);
+    border-radius: 2px;
+}
+
+.visualizations-header p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.visualizations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2.5rem;
+    align-items: start;
+}
+
+/* Chart Card Styles */
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.chart-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--secondary-color);
+}
+
+.chart-title i {
+    font-size: 1.4rem;
+    color: var(--secondary-color);
+}
+
+.chart-title h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.chart-toggle {
+    display: flex;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    padding: 4px;
+    overflow: hidden;
+}
+
+.toggle-button {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.toggle-button.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 122, 77, 0.3);
+}
+
+.chart-container {
+    height: 350px; /* Adjust height as needed */
+    position: relative;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .visualizations-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .chart-toggle {
+        align-self: flex-start;
+    }
+}
+
+/* Tax Revenue Section Styles */
+.tax-revenue {
+    background: linear-gradient(135deg, #f8f9fa 0%, #eef7f2 100%);
+    padding: 6rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tax-categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+/* New styles for tax metrics row */
+.tax-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.tax-metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.tax-metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+.metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border-radius: 12px;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.metric-detail {
+    flex: 1;
+}
+
+.metric-detail h4 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: #444;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.revenue-trend {
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background: rgba(var(--accent-rgb), 0.08);
+    border-radius: 10px;
+    text-align: left;
+    border-left: 4px solid var(--accent-color);
+}
+
+.trend-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.trend-title i {
+    color: var(--accent-color);
+}
+
+/* Tax category card styles are defined elsewhere */
+
+/* Social Development & Strategic Reforms Section */
+.social-reforms {
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f4f8 100%);
+    padding: 6rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-reforms::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(var(--secondary-rgb), 0.06) 0%, rgba(var(--secondary-rgb), 0) 70%);
+    border-radius: 50%;
+    transform: translate(30%, -30%);
+    z-index: 0;
+}
+
+.social-reforms::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.06) 0%, rgba(var(--primary-rgb), 0) 70%);
+    border-radius: 50%;
+    transform: translate(-30%, 30%);
+    z-index: 0;
+}
+
+.social-reforms .container {
+    position: relative;
+    z-index: 1;
+}
+
+.reforms-dashboard {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.dashboard-header {
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.04) 0%, rgba(var(--secondary-rgb), 0.04) 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-insight {
+    margin-bottom: 1.5rem;
+}
+
+.insight-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.insight-title i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    background: rgba(var(--primary-rgb), 0.12);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.insight-title h3 {
+    font-size: 1.6rem;
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.insight-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Grant cards styling */
+.grants-detail {
+    padding: 2.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.grants-detail h4 {
+    font-size: 1.4rem;
+    margin: 0 0 1.5rem;
+    color: var(--dark-color);
+    position: relative;
+    padding-bottom: 0.8rem;
+}
+
+.grants-detail h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.grants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.grant-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    padding: 1.8rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.grant-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.grant-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.grant-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+}
+
+.grant-icon i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.grant-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+.grant-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.8rem;
+}
+
+.grant-recipients, .grant-total {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.6rem;
+}
+
+.grant-info {
+    background: rgba(var(--accent-rgb), 0.08);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.grant-growth {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: rgba(var(--primary-rgb), 0.08);
+    border-radius: 50px;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.grant-growth i {
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.grant-note {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: rgba(var(--accent-rgb), 0.08);
+    border-left: 3px solid var(--accent-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Social programs styling */
+.social-programs {
+    padding: 2.5rem;
+}
+
+.social-programs h4 {
+    font-size: 1.4rem;
+    margin: 0 0 1.5rem;
+    color: var(--dark-color);
+    position: relative;
+    padding-bottom: 0.8rem;
+}
+
+.social-programs h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 2px;
+}
+
+.programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.program-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.8rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.program-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.program-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.program-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(var(--secondary-rgb), 0.1);
+    border-radius: 10px;
+}
+
+.program-icon i {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.program-header h5 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.program-amount {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.program-desc p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+}
+
+.program-key-points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.key-point {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.key-point i {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.key-point span {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+/* Reforms progress styling */
+.dashboard-tabs {
+    display: flex;
+    padding: 0 2.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: #f8f9fa;
+}
+
+.dashboard-tab {
+    padding: 1.2rem 1.5rem;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.dashboard-tab:hover {
+    color: var(--primary-color);
+}
+
+.dashboard-tab.active {
+    color: var(--primary-color);
+}
+
+.dashboard-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-color);
+}
+
+.dashboard-panel {
+    display: none;
+    padding: 2.5rem;
+}
+
+.dashboard-panel.active {
+    display: block;
+}
+
+.panel-header {
+    margin-bottom: 2rem;
+}
+
+.panel-header h3 {
+    font-size: 1.6rem;
+    margin: 0 0 0.8rem;
+    color: var(--dark-color);
+}
+
+.panel-header p {
+    color: #555;
+    margin: 0;
+}
+
+/* Strategic reforms styling */
+.reform-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.reform-category {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.reform-category:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--primary-rgb), 0.1);
+    border-radius: 12px;
+}
+
+.category-icon i {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+}
+
+.category-header h4 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.category-desc {
+    margin-bottom: 1.5rem;
+}
+
+.category-desc p {
+    color: #555;
+    margin: 0;
+}
+
+.reform-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.reform-item {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.reform-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07);
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.item-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--secondary-rgb), 0.1);
+    border-radius: 10px;
+}
+
+.item-icon i {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+.item-header h5 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--dark-color);
+}
+
+.item-content p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.item-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.item-stats .stat {
+    background: rgba(var(--primary-rgb), 0.06);
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.item-stats .stat-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.item-stats .stat-value {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+/* Progress styling */
+.progress-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.progress-chart-container {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.operation-vulindlela {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 1.5rem;
+}
+
+.operation-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.operation-icon i {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.operation-content h4 {
+    font-size: 1.3rem;
+    margin: 0 0 1rem;
+    color: var(--dark-color);
+}
+
+.operation-content p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.operation-achievements h5 {
+    font-size: 1.1rem;
+    margin: 0 0 1rem;
+    color: var(--dark-color);
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.achievement-item i {
+    color: var(--primary-color);
+    font-size: 1rem;
+    margin-top: 0.2rem;
+}
+
+.achievement-item span {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.5;
+}
+
+.progress-table-container {
+    margin-top: 3rem;
+}
+
+.progress-table-container h4 {
+    font-size: 1.3rem;
+    margin: 0 0 1.5rem;
+    color: var(--dark-color);
+}
+
+.progress-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.progress-table th, 
+.progress-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.progress-table th {
+    background: rgba(var(--primary-rgb), 0.08);
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.progress-table tr:last-child td {
+    border-bottom: none;
+}
+
+.progress-table tr:hover td {
+    background: rgba(var(--primary-rgb), 0.02);
+}
+
+.status {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status.completed {
+    background: rgba(76, 175, 80, 0.1);
+    color: #388E3C;
+}
+
+.status.in-progress {
+    background: rgba(255, 193, 7, 0.1);
+    color: #FFA000;
+}
+
+.status.planned {
+    background: rgba(33, 150, 243, 0.1);
+    color: #1976D2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .grants-grid,
+    .programs-grid,
+    .reform-items {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .progress-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .insight-stats {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .operation-vulindlela {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-header,
+    .grants-detail,
+    .social-programs,
+    .dashboard-panel {
+        padding: 1.5rem;
+    }
+    
+    .dashboard-tabs {
+        padding: 0 1.5rem;
+        overflow-x: auto;
+    }
+    
+    .dashboard-tab {
+        padding: 1rem 1.2rem;
+        white-space: nowrap;
+    }
+}

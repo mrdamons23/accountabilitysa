@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Sentiment Dashboard | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/sentiment.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html" class="active">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> <span class="login-text">Login</span></a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="sentiment-container">
+        <!-- Hero Section -->
+        <section class="sentiment-hero">
+            <div class="sentiment-hero-content">
+                <h1>Public Sentiment Dashboard</h1>
+                <p>Express your satisfaction with government services, political parties, and policies. Your voice matters in shaping South Africa's future.</p>
+                
+                <div class="sentiment-stats">
+                    <div class="sentiment-stat">
+                        <div class="stat-number" id="topics-count">0</div>
+                        <div class="stat-label">Total Topics</div>
+                    </div>
+                    <div class="sentiment-stat">
+                        <div class="stat-number" id="votes-count">0</div>
+                        <div class="stat-label">Total Votes</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls Section -->
+        <section class="sentiment-controls">
+            <div class="search-filter-container">
+                <form id="search-form" class="search-box">
+                    <input type="text" id="search-input" placeholder="Search for topics...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                <div class="filter-options">
+                    <select id="filter-province">
+                        <option value="">All Provinces</option>
+                        <option value="eastern-cape">Eastern Cape</option>
+                        <option value="free-state">Free State</option>
+                        <option value="gauteng">Gauteng</option>
+                        <option value="kwazulu-natal">KwaZulu-Natal</option>
+                        <option value="limpopo">Limpopo</option>
+                        <option value="mpumalanga">Mpumalanga</option>
+                        <option value="northern-cape">Northern Cape</option>
+                        <option value="north-west">North West</option>
+                        <option value="western-cape">Western Cape</option>
+                    </select>
+                    <select id="filter-time">
+                        <option value="">All Time</option>
+                        <option value="this-week">This Week</option>
+                        <option value="this-month">This Month</option>
+                        <option value="this-year">This Year</option>
+                    </select>
+                </div>
+            </div>
+            <div class="sentiment-actions">
+                <button class="btn-my-votes" id="my-votes-btn">
+                    <i class="fas fa-check-circle"></i> My Votes
+                </button>
+            </div>
+        </section>
+
+        <!-- Tabs Section -->
+        <section class="sentiment-tabs">
+            <div class="tab-navigation">
+                <button class="tab-button active" data-category="service-delivery">Service Delivery</button>
+                <button class="tab-button" data-category="political-parties">Political Parties</button>
+                <button class="tab-button" data-category="government-departments">Government Departments</button>
+                <button class="tab-button" data-category="policies">Policies</button>
+            </div>
+            
+            <div class="sentiment-content">
+            <!-- Service Delivery Tab -->
+            <div class="tab-pane active" id="service-delivery-tab">
+                <h2 class="tab-title">Service Delivery Sentiment</h2>
+                <p class="tab-description">Rate your satisfaction with various service delivery areas across South Africa.</p>
+                
+                <div class="sentiment-grid" id="service-delivery-grid">
+                        <!-- Content dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                <!-- Political Parties Tab -->
+            <div class="tab-pane" id="political-parties-tab">
+                    <h2 class="tab-title">Political Parties Sentiment</h2>
+                    <p class="tab-description">Rate your satisfaction with South Africa's political parties and their performance.</p>
+                
+                <div class="sentiment-grid" id="political-parties-grid">
+                        <!-- Content dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                <!-- Government Departments Tab -->
+            <div class="tab-pane" id="government-departments-tab">
+                    <h2 class="tab-title">Government Departments Sentiment</h2>
+                    <p class="tab-description">Rate your satisfaction with the performance of various government departments and agencies.</p>
+                
+                <div class="sentiment-grid" id="government-departments-grid">
+                        <!-- Content dynamically loaded here -->
+                        </div>
+                    </div>
+                    
+                <!-- Policies Tab -->
+            <div class="tab-pane" id="policies-tab">
+                    <h2 class="tab-title">Policies Sentiment</h2>
+                    <p class="tab-description">Rate your satisfaction with key government policies and their implementation.</p>
+                
+                <div class="sentiment-grid" id="policies-grid">
+                        <!-- Content dynamically loaded here -->
+                        </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-user-lock"></i>
+                <h2>Login Required</h2>
+                <p>You need to be logged in to participate in sentiment voting.</p>
+            </div>
+            <div class="modal-actions">
+                <a href="login.html" class="btn-modal-action primary">Login</a>
+                <a href="signup.html" class="btn-modal-action secondary">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sentiment.js"></script>
+</body>
+</html> 

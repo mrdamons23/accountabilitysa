@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corruption Tracker | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/corruption-tracker.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+    <style>
+        .corruption-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 1.5rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.2;
+            color: var(--dark-color);
+        }
+        
+        .stat-label {
+            color: var(--text-color);
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .filter-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-container i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+        
+        .case-count {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+        
+        .case-count span {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .corruption-cases {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .corruption-case {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .corruption-case:hover {
+            transform: translateY(-3px);
+        }
+        
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .case-title {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .case-department {
+            display: inline-block;
+            background-color: var(--light-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .case-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-ongoing {
+            background-color: var(--accent-color);
+            color: var(--sa-black);
+        }
+        
+        .status-resolved {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .status-new {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .case-details {
+            margin-bottom: 1rem;
+        }
+        
+        .case-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+        
+        .case-meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .case-meta-item i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .case-amount {
+            font-weight: 600;
+            color: var(--danger-color);
+        }
+        
+        .case-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .case-action-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .case-action-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .case-action-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--sa-black);
+        }
+        
+        .load-more {
+            display: block;
+            width: max-content;
+            margin: 2rem auto;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .load-more:hover {
+            background-color: #001c7a;
+        }
+        
+        .report-btn {
+            display: block;
+            width: max-content;
+            margin: 3rem auto;
+            padding: 1rem 2rem;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+        
+        .report-btn:hover {
+            background-color: #c02e29;
+        }
+        
+        .report-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Category Breakdown Styles */
+        .corruption-categories {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            padding: 0 1.5rem;
+        }
+        
+        .corruption-categories h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-color);
+        }
+        
+        .category-breakdown {
+            margin-bottom: 2rem;
+        }
+        
+        .category-item {
+            margin-bottom: 1rem;
+        }
+        
+        .category-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .category-bar {
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 15px;
+        }
+        
+        .bar-value {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        
+        .amount-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .amount-column {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+        }
+        
+        .amount-column h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .amount-column ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .amount-column li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 500;
+        }
+        
+        .amount-column li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html" class="active">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Corruption Tracker Hero Section -->
+    <section class="corruption-hero">
+        <div class="corruption-hero-content">
+            <h1>Corruption Tracker</h1>
+            <p>Monitor, track, and report corruption cases across South Africa's public and private sectors. This page streamlines access to corruption-related news articles, helping the public stay informed about ongoing investigations and resolutions.</p>
+            
+            <div class="hero-separator"></div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <section class="corruption-search">
+        <div class="search-container">
+            <input type="text" id="case-search" placeholder="Search for cases by keyword, department, or individual...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="filter-controls">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Cases</button>
+            <button class="filter-btn" data-filter="new">New Cases</button>
+            <button class="filter-btn" data-filter="ongoing">Ongoing</button>
+            <button class="filter-btn" data-filter="resolved">Resolved</button>
+            </div>
+            
+            <div class="sort-controls">
+                <label for="sort-select">Sort by:</label>
+                <select id="sort-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="amount-high">Amount (High to Low)</option>
+                    <option value="amount-low">Amount (Low to High)</option>
+                    <option value="alphabetical">Alphabetical</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="case-count">
+            Showing <span id="case-count">0</span> of <span id="total-cases">0</span> cases
+        </div>
+        
+        <div class="corruption-cases">
+            <!-- Start of corruption cases -->
+            
+            <!-- Case 1 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Allegations of Corruption Against Human Settlements Minister Thembi Simelane</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>Fresh corruption allegations surfaced in 2025 against Human Settlements Minister Thembi Simelane, stemming from her previous role as a project director at Vitrovian, a company contracted by Eskom. A News24 report claimed that during her tenure at Vitrovian, the company inflated prices for work conducted at the Kusile power station. The Democratic Alliance (DA) stated that Simelane earned over R700,000 while working for Vitrovian, purportedly to suppress protests at the Kusile plant.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: April 1, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://allafrica.com/stories/202504010030.html" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Case 2 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Corruption Case Against Former Defence Minister Nosiviwe Mapisa-Nqakula</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>Former parliamentary speaker and former defence minister Nosiviwe Mapisa-Nqakula is facing a corruption case that moved closer to trial in the Pretoria High Court. The allegations involve soliciting and accepting bribes amounting to R4.5 million from a defense contractor during her tenure as defence minister.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 28, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R4.5 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Pretoria</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://allafrica.com/stories/202503280067.html" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Case 3 -->
+            <div class="corruption-case private-sector ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SARS vs. Gold Kid Trading Tax Evasion and Related Financial Crimes</h3>
+                        <span class="case-department">Financial Crime</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The South African Revenue Service (SARS) continued its legal battle in 2025 against Gold Kid Trading (Goldkid) and its director, Andre Greyvensteyn, in a case centered around alleged tax evasion, money laundering, and fraud connected to the "gold mafia". SARS is seeking to recover approximately R3 billion in tax debt from Goldkid.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 19, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R3 Billion</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://mg.co.za/thought-leader/opinion/2025-03-19-the-high-noon-showdown-between-sars-and-the-goldkid-mafia-case/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Case 4 -->
+            <div class="corruption-case private-sector resolved">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">AAR Corp Bribery Allegations Involving South African Airways</h3>
+                        <span class="case-department">Private Sector</span>
+                        <span class="case-status status-resolved">Resolved</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>US-based AAR Corp. agreed to pay over $55 million (approximately R1 billion) to settle allegations of violating the Foreign Corrupt Practices Act (FCPA). The allegations involved AAR Corp., through an executive of its subsidiary and a principal of an AAR joint venture partner, conspiring to bribe government officials to secure business with South African Airways (SAA) between 2015 and 2020.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Resolved: December 13, 2024</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">$55 Million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.mofo.com/resources/insights/250113-top-10-international-anti-corruption-developments-for-december-2024" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Case 5 -->
+            <div class="corruption-case private-sector resolved">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">McKinsey & Company Bribery Allegations Involving South African State-Owned Companies</h3>
+                        <span class="case-department">Private Sector</span>
+                        <span class="case-status status-resolved">Resolved</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The resolution of bribery allegations against McKinsey & Company's South African subsidiary in December 2024, concerning conduct between 2012 and 2016, involved a former partner, Vikas Sagar, who pleaded guilty to conspiring to violate the FCPA by paying bribes to officials at two South African state-owned companies through other consulting firms.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Resolved: December 13, 2024</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">$85 Million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.mofo.com/resources/insights/250113-top-10-international-anti-corruption-developments-for-december-2024" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 6 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Implication of Gauteng Education MEC Chiloane in Pule Mabe's Fraud Case</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>An article from October 2024 indicated the implication of the Gauteng Education MEC Chiloane in a R27 million fraud case involving Pule Mabe. MEC Chiloane allegedly received R185,000 from the proceeds of the tender that was the subject of the fraud.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: October 10, 2024</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R27 Million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Gauteng</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://mg.co.za/tag/fraud/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 7 -->
+            <div class="corruption-case government new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Arrest of Amatola Water Board Director for Fraud and Theft</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-new">New Case</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In January 2025, the Director of Bright Future 1283 Trading (Pty) Ltd, Anele Mapisa, was arrested for alleged fraud, forgery, uttering, and theft related to a 2020 tender issued by the Amatola Water Board for hiring water tankers. The tender had a budget of R250,000 per supplier. Mapisa allegedly submitted fraudulent documents to secure a contract worth over R200,000.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: January 20, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R200,000</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Eastern Cape</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.saps.gov.za/newsroom/msspeechdetail.php?nid=58448" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 8 -->
+            <div class="corruption-case government new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Arrest of SASSA Grant Administrator for Alleged Corruption in Mogwase</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-new">New Case</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>A 42-year-old SASSA grant administrator was arrested in Mogwase in March 2025 for alleged corruption. The administrator allegedly demanded R3,000 from a 63-year-old victim before processing his application for an old-age pension grant. The suspect was arrested after receiving the money from the victim.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 7, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R3,000</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>North West</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://allafrica.com/stories/202503070074.html" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 9 -->
+            <div class="corruption-case private-sector ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">BHI Ponzi Scheme</h3>
+                        <span class="case-department">Financial Crime</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In February 2025, investors in the BHI Ponzi scheme, which allegedly involved R2.7 billion, voiced their determination to see justice served. This followed the state provisionally dropping charges against Michael Haldane and Sona Pillay. Victims are reportedly considering private prosecution and civil action if the state does not proceed to trial.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 5, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R2.7 Billion</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Cape Town</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://mg.co.za/news/2025-02-05-bhi-ponzi-scheme-accused-will-face-justice-say-investors/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 10 -->
+            <div class="corruption-case government new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Interpol Operation Red Card Targeting Cybercrime</h3>
+                        <span class="case-department">Cybercrime</span>
+                        <span class="case-status status-new">New Case</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>An INTERPOL-led operation, codenamed Red Card, conducted between November 2024 and February 2025, resulted in the arrest of over 300 suspects across seven African countries, including South Africa. In South Africa, authorities arrested 40 individuals and seized over 1,000 SIM cards, along with 53 desktops and towers, linked to a sophisticated SIM box fraud scheme.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 28, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.interpol.int/News-and-Events/News/2025/More-than-300-arrests-as-African-countries-clamp-down-on-cyber-threats" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 11 -->
+            <div class="corruption-case state-owned new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Eskom Procurement Fraud at Kusile Power Station</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-new">New Case</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In March 2025, six individuals, including a former Kusile Procurement Officer and a Procurement Manager, were arrested for their involvement in a fraudulent procurement scheme at the Kusile Power Station. Investigations revealed that in 2018, a pump was unlawfully procured for R857,977.00, despite an identical pump being purchased in 2015 for only R18,835.00.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 15, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R839,142</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mpumalanga</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.eskom.co.za/eskoms-ongoing-collaboration-with-law-enforcement-leads-to-six-arrests-for-procurement-fraud/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 12 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Corruption Trial Against Former Eskom Executives Set Down for 2026</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The corruption trial involving UK-based entrepreneur Michael Lomas, former senior manager for group capital Frans Hlakudi, and former executive Abram Mashego, related to alleged fraud, corruption, and money laundering at the Kusile Power Station, has been set down for July 2026. In March 2025, Michael Lomas was granted R2 million bail.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 18, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Gauteng</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.ewn.co.za/2025/03/18/corruption-trial-against-former-eskom-executives-set-down-for-2026" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 13 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Eskom Employee Corruption at Arnot Power Station</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In November 2024, an Eskom employee at Arnot Power Station, Ms. Nonhlanhla Nhlabathi, was granted R50,000 bail after being accused of corruption. She allegedly extorted R220,000 from two individuals by falsely promising them a tender to supply toilets, stationery, uniforms, and baton sticks. Her case was remanded to 12 March 2025 for trial at the Middleburg Regional Court.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: November 20, 2024</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R220,000</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mpumalanga</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.eskom.co.za/eskoms-collaboration-with-law-enforcement-continues-to-yield-positive-results-leading-to-multiple-arrests/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 14 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Theft of Dome Valves at Tutuka Power Station</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In February 2025, an Eskom supplier and his brother were arrested for the theft of 16 dome valves valued at R173,000 from the Tutuka Power Station. The arrests followed investigations dating back to 2023, which revealed collusion between Eskom employees and external parties to steal and resell the valves. Both suspects were granted bail of R10,000 each.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 20, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R173,000</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mpumalanga</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.eskom.co.za/eskoms-collaboration-with-law-enforcement-continues-to-yield-positive-results-leading-to-multiple-arrests/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 15 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Diesel Theft at Kriel Power Station</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>In January 2025, an Eskom employee and a contracted Security Officer were arrested for diesel theft at the Kriel Power Station in Mpumalanga. They were apprehended while attempting to steal diesel worth over R700,000. Both fuel trucks involved were seized as part of the inquiry.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: January 15, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R700,000</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mpumalanga</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.eskom.co.za/eskoms-collaboration-with-law-enforcement-continues-to-yield-positive-results-leading-to-multiple-arrests/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 16 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Maladministration at Ithala Development Finance Corporation</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>President Cyril Ramaphosa authorized the Special Investigating Unit (SIU) to investigate alleged serious maladministration at the Ithala Development Finance Corporation in KwaZulu-Natal, focusing on tendering for an integrated banking solution.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 1, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>KwaZulu-Natal</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 17 -->
+            <div class="corruption-case municipal ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Tenders at Greater Kokstad Local Municipality</h3>
+                        <span class="case-department">Municipal</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating two tenders by the Greater Kokstad Local Municipality in KwaZulu-Natal, involving the supply and renewal of software licenses. Preliminary investigations suggest irregularities in the procurement processes that may have led to significant financial losses.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 5, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>KwaZulu-Natal</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 18 -->
+            <div class="corruption-case municipal ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Maladministration at Llepele-Nkumpi Local Municipality</h3>
+                        <span class="case-department">Municipal</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating serious maladministration in procurement and contracting at Llepele-Nkumpi Local Municipality in Limpopo, including a contract for refurbishing the Lebowakgomo Civic Centre awarded around December 2013, which has shown signs of significant financial irregularities.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 8, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Limpopo</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 19 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Corruption at Greater North Transport</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating allegations of corruption and maladministration in several contracts at the Greater North Transport (GNT) in Limpopo Province, involving board members and employees. Initial findings suggest a pattern of procurement irregularities and possible conflicts of interest.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 10, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Under Investigation</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Limpopo</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Case 20 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Transnet Locomotive Project Corruption Case</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>Former Transnet executives, including Brian Molefe and Anoj Singh, are facing corruption charges related to the parastatal's locomotives project, with Regiments Capital also implicated. The case involves allegations of kickbacks and inflated contracts that cost the state billions of rand.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: January 20, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Billions</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.corruptionwatch.org.za/state-capture-cases-to-look-out-for-in-2025/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+            </div>
+        </div>
+        
+            <!-- Case 21 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Bosasa Corruption Case Involving Correctional Services</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>Former executives of Bosasa are implicated in corruption related to contracts with the Department of Correctional Services, involving procurement irregularities and connections to high-profile individuals. The case has exposed a systematic pattern of bribes to secure and maintain lucrative government contracts.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: January 18, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Billions</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.corruptionwatch.org.za/state-capture-cases-to-look-out-for-in-2025/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+        </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 22 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Vincent Smith Corruption Case</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>Former ANC MP Vincent Smith is facing charges of fraud and corruption for allegedly accepting bribes from Bosasa while chairing the portfolio committee on correctional services. The case involves payments allegedly disguised as loans and other benefits provided to Smith in exchange for political influence.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: January 25, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Millions</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Gauteng</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.corruptionwatch.org.za/state-capture-cases-to-look-out-for-in-2025/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 23 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">National Anti-Corruption Advisory Council Initiatives</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Initiative</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The National Anti-Corruption Advisory Council advises the government on mechanisms to stem corruption, including an overhaul of the institutional architecture. Recent developments include the establishment of specialized investigation units and improved coordination between law enforcement agencies.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: March 1, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">N/A</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.stateofthenation.gov.za/priorities/fighting-corruption" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 24 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Digital Forensic Capability to Support Anti-Corruption Efforts</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Initiative</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>A digital forensic capability has been established to support the NPA Investigating Directorate in its anti-corruption efforts. This initiative enhances the state's ability to investigate complex financial crimes and corruption cases through advanced technological tools and specialized expertise.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: February 15, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">N/A</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.stateofthenation.gov.za/priorities/fighting-corruption" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 25 -->
+            <div class="corruption-case government resolved">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Political Party Funding Act Implementation</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-resolved">Implemented</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The Political Party Funding Act aims to regulate political financing to promote transparency and reduce the potential for corruption. The implementation of this act has led to increased disclosure requirements and limitations on donations, addressing a significant vulnerability in South Africa's anti-corruption framework.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: January 30, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">N/A</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.stateofthenation.gov.za/priorities/fighting-corruption" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 26 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Allegations of Power Heist Involving YSM and Emfuleni Municipality</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>A Sunday Times report in March 2025 detailed allegations of an illicit arrangement between YSM, a supplier to major mining and steel firms, and employees within the Emfuleni Municipality's electricity department. This arrangement reportedly allowed YSM to save millions of rand monthly by slashing its power bill by half. The scheme allegedly involved the theft of a transformer from an Eskom depot and monthly bribes to municipal officials.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 17, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">Millions Monthly</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Gauteng</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://techfinancials.co.za/2025/03/17/six-to-face-court-over-kusile-power-station-fraud-eskom/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 27 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Investigation into Funds Disappearance at Limpopo Housing Department</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The National Department of Human Settlements is investigating the mysterious disappearance of R3.2 billion from the Limpopo Human Settlements Department over the past five years. The funds were intended for RDP housing projects, but thousands of planned houses were never built despite funds being allocated and supposedly spent.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 18, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R3.2 billion</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Limpopo</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.sabcnews.com/sabcnews/national-human-settlements-dept-to-probe-disappearance-of-r3-2-billion-meant-for-housing-in-limpopo/" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 28 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Lebowakgomo Civic Centre Refurbishment</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating serious maladministration in procurement and contracting at Llepele-Nkumpi Local Municipality in Limpopo, including a contract for refurbishing the Lebowakgomo Civic Centre awarded around December 2013. Initial investigations have revealed potential overcharging of approximately R15 million for work that was either incomplete or substandard.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 8, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R15 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Limpopo</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 30 -->
+            <div class="corruption-case municipal ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Greater Kokstad Municipality Software License Procurement Investigation</h3>
+                        <span class="case-department">Municipal</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating two tenders by the Greater Kokstad Local Municipality in KwaZulu-Natal, involving the supply and renewal of software licenses. Preliminary investigations suggest irregularities in the procurement processes that led to overpayment of approximately R6.5 million for licenses that were either not delivered or inappropriately priced.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 5, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R6.5 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>KwaZulu-Natal</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 31 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">COVID-19 TERS Fraud by State Employees</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The Special Investigations Unit (SIU) revealed that over 6,000 state employees allegedly unlawfully received the special Temporary Employment Relief grant (TERS) during the COVID-19 pandemic while simultaneously receiving their government salaries. The total amount believed to have been fraudulently claimed is R350 million.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: March 15, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R350 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>National</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.da.org.za/2025/03/da-calls-for-swift-prosecution-of-6-000-more-pandemic-relief-fraudsters-in-state-employ" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 32 -->
+            <div class="corruption-case government ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">SIU Investigation into Irregular COVID-19 Procurement - Department of Defence</h3>
+                        <span class="case-department">Government</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The Special Investigating Unit (SIU) is investigating an irregular R200 million contract by the Department of Defence to purchase unapproved COVID-19 medicine (Interferon) from Cuba. This contract was part of Operation Thusano, an agreement with Cuba costing South African taxpayers at least R1.4 billion since 2015, with all expenditure deemed irregular.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: January 31, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R200 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Pretoria</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.da.org.za/2025/01/corrupt-defence-officials-implicated-in-siu-covid-19-probe-deserve-full-might-of-the-law" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 33 -->
+            <div class="corruption-case state-owned ongoing">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Former Eskom Executives' R745 Million Corruption Case</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-ongoing">Ongoing Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The corruption case involving former Eskom executives, including Abram Masango and France Hlakudi, along with businessmen Antonio Trindad and Hudson Hoyana, has been postponed for trial commencing on 20 July 2025. The accused face 65 counts of corruption related to alleged gross manipulation of contractual agreements at the Kusile Power Station, with a total value of R745 million.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Updated: February 15, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R745 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Mpumalanga</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.youtube.com/watch?v=cjNiK982KWA" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 34 -->
+            <div class="corruption-case municipal new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Ithala Development Finance Corporation Banking Solution Tender Investigation</h3>
+                        <span class="case-department">Municipal</span>
+                        <span class="case-status status-new">New Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>President Cyril Ramaphosa authorized the SIU to investigate alleged serious maladministration at the Ithala Development Finance Corporation in KwaZulu-Natal, focusing on tendering for an integrated banking solution. Preliminary findings suggest irregularities involving approximately R35 million in contracts awarded without proper procedures.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 1, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R35 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>KwaZulu-Natal</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 35 -->
+            <div class="corruption-case state-owned new">
+                <div class="case-header">
+                    <div>
+                        <h3 class="case-title">Greater North Transport Contract Irregularities</h3>
+                        <span class="case-department">State-Owned Entities</span>
+                        <span class="case-status status-new">New Investigation</span>
+                    </div>
+                </div>
+                <div class="case-details">
+                    <p>The SIU is investigating allegations of corruption and maladministration in several contracts at the Greater North Transport (GNT) in Limpopo Province, involving board members and employees. Early findings suggest procurement irregularities amounting to approximately R18 million in fleet management and maintenance contracts.</p>
+                </div>
+                <div class="case-meta">
+                    <div class="case-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reported: February 10, 2025</span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-coins"></i>
+                        <span>Estimated Amount: <span class="case-amount">R18 million</span></span>
+                    </div>
+                    <div class="case-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Limpopo</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <a href="https://www.gov.za/news/media-statements/special-investigating-unit-investigates-alleged-maladministration-and" target="_blank" class="view-article-btn">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>View Article</span>
+                    </a>
+                    <button class="case-action-btn">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="case-action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- End of corruption cases -->
+            
+            <!-- Case 36 -->
+            <div class="corruption-case government ongoing">
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>Accountability SA is a non-profit organization dedicated to fighting corruption and promoting transparency in South Africa.</p>
+                </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@accountabilitysa.org</p>
+                <p>Phone: +27 12 345 6789</p>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Accountability SA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/sorting.js"></script>
+</body>
+</html> 

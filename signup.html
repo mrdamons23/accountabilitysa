@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/account.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <section class="auth-card">
+            <div class="auth-header">
+                <h2>Create Your Account</h2>
+                <p>Join our community and contribute to South African accountability</p>
+            </div>
+            
+            <div id="error-container"></div>
+            
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="full-name">Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="full-name" name="full-name" placeholder="Enter your full name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="province">Province</label>
+                    <div class="input-with-icon select-container">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <select id="province" name="province" required>
+                            <option value="" disabled selected>Select your province</option>
+                            <option value="eastern-cape">Eastern Cape</option>
+                            <option value="free-state">Free State</option>
+                            <option value="gauteng">Gauteng</option>
+                            <option value="kwazulu-natal">KwaZulu-Natal</option>
+                            <option value="limpopo">Limpopo</option>
+                            <option value="mpumalanga">Mpumalanga</option>
+                            <option value="northern-cape">Northern Cape</option>
+                            <option value="north-west">North West</option>
+                            <option value="western-cape">Western Cape</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a></label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <label for="newsletter">I want to receive updates on accountability initiatives</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-auth primary">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="social-auth-buttons">
+                <a href="#" class="social-auth-btn google" id="google-signup">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="#" class="social-auth-btn facebook" id="facebook-signup">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign in here</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Initialize signup functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const signupForm = document.getElementById('signup-form');
+            const nameInput = document.getElementById('full-name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const provinceInput = document.getElementById('province');
+            const termsCheckbox = document.getElementById('terms');
+            const errorContainer = document.getElementById('error-container');
+            const googleSignUp = document.getElementById('google-signup');
+            const facebookSignUp = document.getElementById('facebook-signup');
+            
+            // Password strength indicator
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const strengthLevel = checkPasswordStrength(password);
+                
+                // Update UI based on password strength (to be implemented)
+            });
+            
+            // Form validation and submission
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Clear previous errors
+                errorContainer.innerHTML = '';
+                
+                // Get form values
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                const province = provinceInput.value;
+                const newsletter = document.getElementById('newsletter').checked;
+                
+                // Validate name
+                if (name.length < 2) {
+                    showError('Please enter your full name.');
+                    nameInput.focus();
+                    return;
+                }
+                
+                // Validate email format
+                if (!isValidEmail(email)) {
+                    showError('Please enter a valid email address.');
+                    emailInput.focus();
+                    return;
+                }
+                
+                // Validate password strength
+                const strengthLevel = checkPasswordStrength(password);
+                if (strengthLevel < 2) {
+                    showError('Password is too weak. Use at least 8 characters with letters, numbers, and symbols.');
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // Validate password match
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match.');
+                    confirmPasswordInput.focus();
+                    return;
+                }
+                
+                // Validate province selection
+                if (!province) {
+                    showError('Please select your province.');
+                    provinceInput.focus();
+                    return;
+                }
+                
+                // Validate terms agreement
+                if (!termsCheckbox.checked) {
+                    showError('You must agree to the Terms of Service and Privacy Policy.');
+                    termsCheckbox.focus();
+                    return;
+                }
+                
+                // Submit signup request
+                registerUser(name, email, password, province, newsletter);
+            });
+            
+            // Email validation helper
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            // Password strength checker
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) strength += 1;
+                
+                // Character variety checks
+                if (/[A-Z]/.test(password)) strength += 1; // Uppercase
+                if (/[a-z]/.test(password)) strength += 1; // Lowercase
+                if (/[0-9]/.test(password)) strength += 1; // Numbers
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1; // Special characters
+                
+                return strength;
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorContainer.innerHTML = `                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i> ${message}
+                    </div>
+                `;
+            }
+            
+            // Register user function
+            function registerUser(name, email, password, province, newsletter) {
+                // Show loading state
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                submitBtn.disabled = true;
+                
+                console.log('Registering new user:', email);
+                
+                // In a real implementation, this would be an API call
+                // For demo purposes, we'll simulate a successful registration after a short delay
+                setTimeout(() => {
+                    // Check if email is already in use
+                    if (email === 'demo@accountabilitysa.org') {
+                        showError('This email is already registered. Please try another one or sign in.');
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // Check if user already exists in registered users
+                    const REGISTERED_USERS_KEY = 'accountabilitySARegisteredUsers';
+                    let registeredUsers = {};
+                    
+                    // Try to get existing registered users
+                    try {
+                        const existingUsers = localStorage.getItem(REGISTERED_USERS_KEY);
+                        if (existingUsers) {
+                            registeredUsers = JSON.parse(existingUsers);
+                            
+                            // Check if email already exists
+                            if (registeredUsers[email]) {
+                                showError('This email is already registered. Please try another one or sign in.');
+                                submitBtn.innerHTML = originalBtnText;
+                                submitBtn.disabled = false;
+                                return;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error parsing registered users:', error);
+                        // Continue with empty users object if there was an error
+                    }
+                    
+                    // Create user object
+                    const user = {
+                        id: 'new-' + Math.random().toString(36).substring(2),
+                        name: name,
+                        email: email,
+                        password: password, // IMPORTANT: In a real app, NEVER store plain passwords
+                        role: 'citizen',
+                        province: province,
+                        newsletter: newsletter,
+                        avatar: 'images/avatars/default.jpg',
+                        registrationDate: new Date().toISOString(),
+                        lastLogin: new Date().toISOString()
+                    };
+                    
+                    // Save to session storage for current session
+                    sessionStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                    
+                    // Also save to permanent storage if we want the login to persist
+                    localStorage.setItem('accountabilitySAUser', JSON.stringify(user));
+                    
+                    // MOST IMPORTANTLY: Add to the registered users collection
+                    registeredUsers[email] = user;
+                    localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registeredUsers));
+                    console.log('User registered and saved to localStorage:', email);
+                    
+                    // Set auth token 
+                    const token = 'demo-token-' + Math.random().toString(36).substring(2);
+                    localStorage.setItem('accountabilitySAToken', token);
+                    
+                    // Show success message before redirect
+                    errorContainer.innerHTML = `
+                        <div class="success-message">
+                            <i class="fas fa-check-circle"></i> Account created successfully! Redirecting...
+                        </div>
+                    `;
+                    
+                    // Check for redirect URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get('redirect');
+                    
+                    // Redirect to appropriate page after a brief delay
+                    setTimeout(() => {
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else {
+                            window.location.href = 'account.html';
+                        }
+                    }, 2000);
+                    
+                }, 1500);
+            }
+            
+            // Social signup handlers
+            googleSignUp.addEventListener('click', function(e) {
+                e.preventDefault();
+                // In a real implementation, this would trigger Google OAuth
+                alert('Google Sign Up would be implemented with Google OAuth');
+            });
+            
+            facebookSignUp.addEventListener('click', function(e) {
+                e.preventDefault();
+                // In a real implementation, this would trigger Facebook OAuth
+                alert('Facebook Sign Up would be implemented with Facebook OAuth');
+            });
+            
+            // Check if user is already logged in
+            function checkAuthStatus() {
+                const user = JSON.parse(localStorage.getItem('accountabilitySAUser') || sessionStorage.getItem('accountabilitySAUser') || 'null');
+                const token = localStorage.getItem('accountabilitySAToken');
+                
+                if (user && token) {
+                    // User is already logged in, redirect to account page
+                    window.location.href = 'account.html';
+                }
+            }
+            
+            // Check auth status on page load
+            checkAuthStatus();
+        });
+    </script>
+</body>
+</html> 
+

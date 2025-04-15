@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Businesses - Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/small-businesses.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html" class="active">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero small-businesses-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Support & Strengthen Accountable Small Businesses</h1>
+                <p>Discover local South African businesses committed to ethical practices and community growth. By supporting them, you contribute to a more transparent and accountable economy.</p>
+                <p style="font-size: 1rem; margin-top: -1.5rem; margin-bottom: 2.5rem; color: rgba(255, 255, 255, 0.8);"><em>Listing your business here aligns you with this mission.</em></p>
+                
+                <div class="hero-stats">
+                    <div class="stat-counter">
+                        <span class="stat-number" id="totalBusinesses">267</span>
+                        <span class="stat-label">TOTAL BUSINESSES</span>
+                    </div>
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary" id="createListingBtn">List Your Business</a>
+                    <a href="#" class="btn btn-secondary" id="browseListingsBtn">Browse Businesses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="business-listings" id="businessListings">
+        <div class="container">
+            <h2>Discover Local Businesses</h2>
+            <p class="section-subtitle">Find and support local small businesses across South Africa, or list your own to reach the community.</p>
+            
+            <div class="controls-section">
+                <div class="search-filters">
+                    <div class="search-bar">
+                        <input type="text" id="searchBusinesses" placeholder="Search for businesses...">
+                        <button id="searchButton"><i class="fas fa-search"></i></button>
+                    </div>
+                    
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label for="provinceFilter">Province</label>
+                            <select id="provinceFilter">
+                                <option value="all">All Provinces</option>
+                                <option value="Eastern Cape">Eastern Cape</option>
+                                <option value="Free State">Free State</option>
+                                <option value="Gauteng">Gauteng</option>
+                                <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                <option value="Limpopo">Limpopo</option>
+                                <option value="Mpumalanga">Mpumalanga</option>
+                                <option value="Northern Cape">Northern Cape</option>
+                                <option value="North West">North West</option>
+                                <option value="Western Cape">Western Cape</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="suburbFilter">Suburb/Area</label>
+                            <select id="suburbFilter">
+                                <option value="all">All Suburbs</option>
+                                <!-- Suburbs will be populated dynamically based on province -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-filters-container">
+                <h3>Filter by Category</h3>
+                <div class="category-filters" id="categoryFilters">
+                    <div class="category-item active" data-category="all">
+                        <div class="category-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <span class="category-label">All</span>
+                    </div>
+                    <div class="category-item" data-category="Agriculture">
+                        <div class="category-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <span class="category-label">Agriculture</span>
+                    </div>
+                    <div class="category-item" data-category="Technology">
+                        <div class="category-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <span class="category-label">Technology</span>
+                    </div>
+                    <div class="category-item" data-category="Creative Arts">
+                        <div class="category-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <span class="category-label">Arts</span>
+                    </div>
+                    <div class="category-item" data-category="Health & Wellness">
+                        <div class="category-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <span class="category-label">Health</span>
+                    </div>
+                    <div class="category-item" data-category="Education">
+                        <div class="category-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <span class="category-label">Education</span>
+                    </div>
+                    <div class="category-item" data-category="Food & Beverage">
+                        <div class="category-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <span class="category-label">Food</span>
+                    </div>
+                    <div class="category-item" data-category="Construction">
+                        <div class="category-icon">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <span class="category-label">Construction</span>
+                    </div>
+                    <div class="category-item" data-category="Transportation">
+                        <div class="category-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <span class="category-label">Transport</span>
+                    </div>
+                    <div class="category-item" data-category="Retail">
+                        <div class="category-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <span class="category-label">Retail</span>
+                    </div>
+                    <div class="category-item" data-category="Professional Services">
+                        <div class="category-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <span class="category-label">Professional</span>
+                    </div>
+                    <div class="category-item" data-category="Tourism & Hospitality">
+                        <div class="category-icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <span class="category-label">Tourism</span>
+                    </div>
+                    <div class="category-item" data-category="Manufacturing">
+                        <div class="category-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <span class="category-label">Manufacturing</span>
+                    </div>
+                    <div class="category-item" data-category="Mining">
+                        <div class="category-icon">
+                            <i class="fas fa-hammer"></i>
+                        </div>
+                        <span class="category-label">Mining</span>
+                    </div>
+                    <div class="category-item" data-category="Financial Services">
+                        <div class="category-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <span class="category-label">Financial</span>
+                    </div>
+                    <div class="category-item" data-category="Beauty & Cosmetics">
+                        <div class="category-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <span class="category-label">Beauty</span>
+                    </div>
+                    <div class="category-item" data-category="Media & Entertainment">
+                        <div class="category-icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <span class="category-label">Media</span>
+                    </div>
+                    <div class="category-item" data-category="Home & Garden">
+                        <div class="category-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <span class="category-label">Home</span>
+                    </div>
+                    <div class="category-item" data-category="Other">
+                        <div class="category-icon">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                        <span class="category-label">Other</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="businesses-grid" id="businessesGrid">
+                <!-- Business cards will be populated by JavaScript -->
+            </div>
+            
+            <div class="load-more">
+                <button id="loadMoreBtn" class="btn btn-tertiary">Load More</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="create-business" id="createBusiness">
+        <div class="container">
+            <div class="form-header">
+                <h2>List Your Business & Join the Movement</h2>
+                <p class="section-subtitle">Increase your visibility to conscious consumers and demonstrate your commitment to ethical business practices in South Africa.</p>
+                <div class="fee-notice">
+                    <i class="fas fa-hands-helping"></i>
+                    <div>
+                        <p>A small contribution of <strong>R25 per month</strong> enables your listing and fuels our shared mission. This fee supports:</p>
+                        <ul>
+                            <li><strong>Platform Maintenance & Development:</strong> Ensuring a reliable, feature-rich experience.</li>
+                            <li><strong>Increased Visibility:</strong> Funding advertising to connect you with more customers who value accountability.</li>
+                            <li><strong>Promoting Accountability:</strong> Directly supporting our broader work in fostering transparency across SA's economy and governance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="businessForm" class="business-form multi-step-form">
+                
+                <!-- Step 1: Basic Info -->
+                <div class="form-step active" data-step="1">
+                    <h3 class="step-title">Step 1: Business Details</h3>
+                    <div class="form-group">
+                        <label for="businessName">Business Name <span class="required">*</span></label>
+                        <input type="text" id="businessName" name="businessName" required placeholder="e.g., Sipho's Bakery">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessCategory">Category <span class="required">*</span></label>
+                        <select id="businessCategory" name="businessCategory" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <option value="Agriculture">Agriculture</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Creative Arts">Creative Arts</option>
+                            <option value="Health & Wellness">Health & Wellness</option>
+                            <option value="Education">Education</option>
+                            <option value="Food & Beverage">Food & Beverage</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Professional Services">Professional Services</option>
+                            <option value="Tourism & Hospitality">Tourism & Hospitality</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Mining">Mining</option>
+                            <option value="Financial Services">Financial Services</option>
+                            <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+                            <option value="Media & Entertainment">Media & Entertainment</option>
+                            <option value="Home & Garden">Home & Garden</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group service-area-group">
+                        <label>Service Area Type <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="serviceAreaType" value="single" checked>
+                                Single Location
+                            </label>
+                            <label>
+                                <input type="radio" name="serviceAreaType" value="multiple">
+                                Multiple Locations / Areas
+                            </label>
+                            <label>
+                                <input type="radio" name="serviceAreaType" value="national">
+                                National Service
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="location-fields" id="singleLocationFields">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="businessProvince">Province <span class="required">*</span></label>
+                                <select id="businessProvince" name="businessProvince" required>
+                                    <option value="" disabled selected>Select a province</option>
+                                    <option value="Eastern Cape">Eastern Cape</option>
+                                    <option value="Free State">Free State</option>
+                                    <option value="Gauteng">Gauteng</option>
+                                    <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                    <option value="Limpopo">Limpopo</option>
+                                    <option value="Mpumalanga">Mpumalanga</option>
+                                    <option value="Northern Cape">Northern Cape</option>
+                                    <option value="North West">North West</option>
+                                    <option value="Western Cape">Western Cape</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="businessSuburb">Suburb/Area <span class="required">*</span></label>
+                                <input type="text" id="businessSuburb" name="businessSuburb" required placeholder="e.g., Soweto, Sandton">
+                                <p class="form-hint">Enter the primary suburb or town.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="location-fields hidden" id="multipleLocationFields">
+                        <div class="form-group">
+                             <label for="multipleLocations">Provinces / Major Areas Served <span class="required">*</span></label>
+                             <textarea id="multipleLocations" name="multipleLocations" rows="3" placeholder="e.g., Gauteng (Johannesburg, Pretoria), Western Cape (Cape Town), Durban Metro"></textarea>
+                             <p class="form-hint">List the main provinces or metropolitan areas you serve. Separate with commas or new lines.</p>
+                        </div>
+                    </div>
+
+                    <div class="location-fields hidden" id="nationalServiceFields">
+                         <p class="info-notice"><i class="fas fa-globe-africa"></i> Your business offers services nationwide.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Description & Uniqueness -->
+                <div class="form-step" data-step="2">
+                    <h3 class="step-title">Step 2: About Your Business</h3>
+                    <div class="form-group">
+                        <label for="businessDescription">Business Description <span class="required">*</span></label>
+                        <textarea id="businessDescription" name="businessDescription" rows="5" required placeholder="Describe what your business does, the products or services you offer, and your target market."></textarea>
+                        <p class="form-hint">Max 500 characters. Be clear and concise.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="businessUnique">What Makes You Unique? <span class="required">*</span></label>
+                        <textarea id="businessUnique" name="businessUnique" rows="4" required placeholder="Describe what sets your business apart from competitors, your unique value proposition, or social impact (e.g., community focus, sustainability)."></textarea>
+                        <p class="form-hint">Max 300 characters. Highlight your key differentiators.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Contact & Online Presence -->
+                <div class="form-step" data-step="3">
+                    <h3 class="step-title">Step 3: Contact & Online Presence</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessPhone">Phone Number</label>
+                            <input type="tel" id="businessPhone" name="businessPhone" placeholder="e.g., 082 123 4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="businessEmail">Contact Email <span class="required">*</span></label>
+                            <input type="email" id="businessEmail" name="businessEmail" required placeholder="e.g., info@example.co.za">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessWebsite">Website</label>
+                            <input type="url" id="businessWebsite" name="businessWebsite" placeholder="https://example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="businessSocialMedia">Social Media Link (Optional)</label>
+                            <input type="url" id="businessSocialMedia" name="businessSocialMedia" placeholder="e.g., https://facebook.com/yourbusiness">
+                            <p class="form-hint">Link to your main social media page (Facebook, Instagram, etc.).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Images -->
+                <div class="form-step" data-step="4">
+                    <h3 class="step-title">Step 4: Images (Optional)</h3>
+                    <div class="form-row">
+                        <div class="form-group file-upload-group">
+                            <label for="businessLogo">Business Logo</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="businessLogo" name="businessLogo" accept="image/png, image/jpeg, image/webp">
+                                <button type="button" class="btn-upload"><i class="fas fa-upload"></i> Choose File</button>
+                                <span class="file-name">No file chosen</span>
+                            </div>
+                            <div class="file-preview logo-preview-container"></div>
+                            <p class="form-hint">Recommended: Square image (e.g., 500x500px), PNG, JPG, or WEBP format, max 2MB.</p>
+                        </div>
+                        <div class="form-group file-upload-group">
+                            <label for="businessBanner">Business Banner</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="businessBanner" name="businessBanner" accept="image/png, image/jpeg, image/webp">
+                                <button type="button" class="btn-upload"><i class="fas fa-upload"></i> Choose File</button>
+                                <span class="file-name">No file chosen</span>
+                            </div>
+                            <div class="file-preview banner-preview-container"></div>
+                            <p class="form-hint">Recommended: Landscape image (e.g., 1200x600px), PNG, JPG, or WEBP format, max 5MB.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Review & Payment -->
+                <div class="form-step" data-step="5">
+                    <h3 class="step-title">Step 5: Review & Payment</h3>
+                    <div class="review-summary" id="reviewSummary">
+                        <h4>Review Your Listing Details:</h4>
+                        <!-- Summary will be generated by JavaScript -->
+                        <p>Please review the information above carefully before proceeding.</p>
+                    </div>
+                    <div class="payment-section">
+                        <h4>Payment Details</h4>
+                        <p>To complete your listing, please proceed with the <strong>R25 monthly payment</strong>. You will be redirected to our secure payment page.</p>
+                        <div class="payment-options">
+                            <img src="images/paystack-logo.png" alt="Paystack Secure Payments" class="payment-logo">
+                            <p class="secure-notice"><i class="fas fa-lock"></i> Secure payment processing by Paystack - trusted by thousands of African businesses.</p>
+                        </div>
+                        <div class="terms-agreement">
+                            <input type="checkbox" id="termsAgree" name="termsAgree" required>
+                            <label for="termsAgree">I agree to the <a href="/terms-of-service.html" target="_blank">Terms of Service</a> and acknowledge the recurring R25 monthly fee. <span class="required">*</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary btn-prev" disabled>Previous</button>
+                    <div class="step-indicator" id="stepIndicator">Step 1 of 5</div>
+                    <button type="button" class="btn btn-primary btn-next">Next</button>
+                    <button type="submit" class="btn btn-primary btn-submit hidden">Proceed to Payment (R25/month)</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    
+    <section class="business-preview hidden" id="businessPreview">
+        <div class="container">
+            <h2>Business Preview</h2>
+            <p class="section-subtitle">This is how your business will appear on our platform</p>
+            
+            <div class="preview-container" id="previewContainer">
+                <!-- Preview will be generated by JavaScript -->
+            </div>
+            
+            <p class="preview-notice">Ready to submit? Scroll down to complete your submission.</p>
+        </div>
+    </section>
+    
+    <section class="submission-success hidden" id="submissionSuccess">
+        <div class="container">
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <h2>Submission Successful!</h2>
+                <p>Thank you for submitting your business listing. Your payment has been successfully processed via Paystack.</p>
+                <p>Our team will review your submission and publish it soon. You will receive a confirmation email with further details.</p>
+                <div class="success-actions">
+                    <a href="#businessListings" class="btn btn-primary">Browse Business Listings</a>
+                    <a href="index.html" class="btn btn-secondary">Return to Homepage</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/small-businesses.js"></script>
+    <script src="js/multi-step-form.js"></script>
+    <script>
+        $(function() {
+            // Load the standardized footer
+            $("#footer-placeholder").load("footer.html");
+        });
+    </script>
+</body>
+</html> 

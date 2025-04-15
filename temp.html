@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Monitor | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.css">
+    <style>
+        :root {
+            --primary-color: rgb(0, 122, 77);
+            --primary-rgb: 0, 122, 77;
+            --secondary-color: rgb(0, 69, 130);
+            --secondary-rgb: 0, 69, 130;
+            --accent-color: rgb(253, 193, 0);
+            --accent-rgb: 253, 193, 0;
+            --danger-color: rgb(222, 56, 49);
+            --danger-rgb: 222, 56, 49;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --text-color: #333;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--dark-color);
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        /* Budget Dashboard Hero */
+        .budget-hero {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.95), rgba(var(--secondary-rgb), 0.95)), url('images/sa-flag.jpg') center/cover no-repeat;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .budget-hero h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            z-index: 1;
+        }
+
+        .budget-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .budget-hero__actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--dark-color);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Key Budget Metrics Section */
+        .key-metrics {
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            color: #666;
+            max-width: 700px;
+            margin: 1rem auto 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .metric-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .metric-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .metric-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+        }
+
+        .metric-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .metric-card:nth-child(4)::before {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .metric-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(var(--accent-rgb), 0.1);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+        }
+
+        .metric-card:nth-child(1) .metric-icon {
+            color: var(--primary-color);
+            background-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        .metric-card:nth-child(2) .metric-icon {
+            color: var(--accent-color);
+            background-color: rgba(var(--accent-rgb), 0.1);
+        }
+
+        .metric-card:nth-child(3) .metric-icon {
+            color: var(--secondary-color);
+            background-color: rgba(var(--secondary-rgb), 0.1);
+        }
+
+        .metric-card:nth-child(4) .metric-icon {
+            color: var(--danger-color);
+            background-color: rgba(var(--danger-rgb), 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .metric-context {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 1rem;
+        }
+
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .change-positive {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+        }
+
+        .change-negative {
+            background-color: rgba(var(--danger-rgb), 0.1);
+            color: var(--danger-color);
+        }
+
+        .metric-change i {
+            margin-right: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        /* Budget Expenditure Styles */
+        .budget-expenditure {
+            background-color: #fff;
+            padding: 5rem 0;
+        }
+
+        .expenditure-wrapper {
+            margin-top: 3rem;
+        }
+
+        .expenditure-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #777;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn:after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: transparent;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active:after {
+            background-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-content {
+            height: 400px;
+            position: relative;
+        }
+
+        .expenditure-details {
+            margin-top: 2rem;
+        }
+
+        .detail-card-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .division-cards {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .detail-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid #f0f0f0;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-card {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+
+        .detail-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .detail-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-percent {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .detail-description {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .detail-items {
+            margin-top: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 0.95rem;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            color: #555;
+        }
+
+        .item-value {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        /* Fiscal Strategy Section Styles */
+        .fiscal-strategy {
+            background-color: var(--light-color);
+            padding: 5rem 0;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 992px) {
+            .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .strategy-chart-card, 
+        .strategy-info-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            height: 100%;
+        }
+
+        .strategy-chart-card {
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background-color: #f5f5f5;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .views-container {
+            position: relative;
+        }
+
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .chart-caption {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .chart-caption i {
+            color: var(--primary-color);
+            margin-right: 0.3rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.8rem 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .data-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-trend {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .table-trend.up {
+            background-color: rgba(var(--danger-rgb), 0.1);
+            color: var(--danger-color);
+        }
+
+        .table-trend.down {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+        }
+
+        .table-trend.up::before {
+            content: '↑';
+            margin-right: 0.2rem;
+        }
+
+        .table-trend.down::before {
+            content: '↓';
+            margin-right: 0.2rem;
+        }
+
+        .highlighted-row {
+            background-color: rgba(var(--accent-rgb), 0.1);
+            font-weight: 600;
+        }
+
+        .strategy-info-card h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .objective-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .objective-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .objective-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .objective-content h4 {
+            margin: 0 0 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .objective-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .strategy-details-container {
+            margin-top: 3rem;
+        }
+
+        .tax-measures-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+        }
+
+        .tax-measures-card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .tax-measures-card > p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .tax-measures-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tax-measure {
+            border-radius: var(--border-radius);
+            border: 1px solid #f0f0f0;
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .tax-measure:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .measure-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .measure-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: rgba(var(--secondary-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+
+        .measure-header h4 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .tax-measure p {
+            margin: 0 0 1rem;
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .measure-impact {
+            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            background-color: rgba(var(--accent-rgb), 0.1);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Infrastructure Investment Section Styles */
+        .infrastructure-investment {
+            background-color: #fff;
+            padding: 5rem 0;
+        }
+
+        .infrastructure-overview {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 3rem;
+            overflow: hidden;
+        }
+
+        .overview-text {
+            padding: 3rem;
+            flex: 1;
+            text-align: center;
+        }
+
+        .overview-text h3 {
+            font-size: 3rem;
+            margin: 0 0 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .overview-text p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .overview-chart {
+            flex: 1.5;
+            height: 300px;
+            padding: 1.5rem;
+        }
+
+        .infrastructure-sectors {
+            margin-top: 3rem;
+        }
+
+        .infrastructure-sectors h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .sectors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sector-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .sector-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sector-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .sector-card:nth-child(1) .sector-icon {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+        }
+
+        .sector-card:nth-child(2) .sector-icon {
+            background-color: rgba(var(--danger-rgb), 0.1);
+            color: var(--danger-color);
+        }
+
+        .sector-card:nth-child(3) .sector-icon {
+            background-color: rgba(var(--secondary-rgb), 0.1);
+            color: var(--secondary-color);
+        }
+
+        .sector-card:nth-child(4) .sector-icon {
+            background-color: rgba(255, 0, 122, 0.1);
+            color: rgb(255, 0, 122);
+        }
+
+        .sector-card:nth-child(5) .sector-icon {
+            background-color: rgba(0, 191, 255, 0.1);
+            color: rgb(0, 191, 255);
+        }
+
+        .sector-card:nth-child(6) .sector-icon {
+            background-color: rgba(var(--accent-rgb), 0.1);
+            color: var(--accent-color);
+        }
+
+        .sector-details {
+            flex: 1;
+        }
+
+        .sector-details h4 {
+            margin: 0 0 0.3rem;
+            font-size: 1.1rem;
+        }
+
+        .sector-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            color: var(--dark-color);
+        }
+
+        .sector-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .infrastructure-reforms {
+            margin-top: 4rem;
+        }
+
+        .infrastructure-reforms h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .reforms-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .reform-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .reform-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .reform-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .reform-content h4 {
+            margin: 0 0 0.5rem;
+            font-size: 1.05rem;
+        }
+
+        .reform-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Budget Comparison Section Styles */
+        .budget-comparison {
+            background-color: var(--light-color);
+            padding: 5rem 0;
+        }
+
+        .comparison-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .comparison-filters {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .comparison-select {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .comparison-timeframe {
+            display: flex;
+            background-color: #fff;
+            border-radius: 50px;
+            padding: 0.3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .timeframe-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .timeframe-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .comparison-chart-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .key-insights {
+            margin-top: 4rem;
+        }
+
+        .key-insights h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .insight-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.8rem;
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .insight-card:nth-child(1) {
+            border-top-color: var(--primary-color);
+        }
+
+        .insight-card:nth-child(2) {
+            border-top-color: var(--accent-color);
+        }
+
+        .insight-card:nth-child(3) {
+            border-top-color: var(--secondary-color);
+        }
+
+        .insight-card:nth-child(4) {
+            border-top-color: var(--danger-color);
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .insight-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+        }
+
+        .insight-card:nth-child(1) .insight-icon {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+        }
+
+        .insight-card:nth-child(2) .insight-icon {
+            background-color: rgba(var(--accent-rgb), 0.1);
+            color: var(--accent-color);
+        }
+
+        .insight-card:nth-child(3) .insight-icon {
+            background-color: rgba(var(--secondary-rgb), 0.1);
+            color: var(--secondary-color);
+        }
+
+        .insight-card:nth-child(4) .insight-icon {
+            background-color: rgba(var(--danger-rgb), 0.1);
+            color: var(--danger-color);
+        }
+
+        .insight-card h4 {
+            margin: 0 0 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .insight-card p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .budget-cta {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.95), rgba(var(--secondary-rgb), 0.95)), url('images/parliament.jpg') center/cover no-repeat;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Media Queries */
+        @media (max-width: 992px) {
+            .budget-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .strategy-grid,
+            .sectors-grid,
+            .reforms-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .infrastructure-overview {
+                flex-direction: column;
+            }
+            
+            .overview-text,
+            .overview-chart {
+                width: 100%;
+            }
+            
+            .comparison-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .budget-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .budget-hero p {
+                font-size: 1rem;
+            }
+            
+            .metrics-grid,
+            .detail-card-wrapper,
+            .tax-measures-list,
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .budget-hero__actions,
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .sector-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .sector-icon {
+                margin: 0 auto 1rem;
+            }
+        }
+
+        /* Economic Outlook Dashboard Styles */
+        .economic-outlook {
+            background-color: #fff;
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        .wide-card {
+            grid-column: span 2;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        .data-source {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .dashboard-table-container {
+            overflow-x: auto;
+        }
+
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-table th {
+            background-color: #f8f9fa;
+            padding: 0.8rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .dashboard-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dashboard-table .highlight-row {
+            background-color: rgba(var(--primary-rgb), 0.05);
+            font-weight: 600;
+        }
+
+        .dashboard-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(var(--accent-rgb), 0.1);
+            border-left: 3px solid var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .dashboard-note p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .framework-points {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .framework-point {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .point-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(var(--primary-rgb), 0.1);
+            display: flex;
+
+

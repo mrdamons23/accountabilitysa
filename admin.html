@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Admin Dashboard Styles */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        .admin-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h2 {
+            color: var(--secondary-color);
+            margin: 0;
+        }
+        
+        .admin-header .admin-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .admin-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .admin-btn:hover {
+            background-color: #006040;
+        }
+        
+        .admin-btn.secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .admin-btn.secondary:hover {
+            background-color: #001c7a;
+        }
+        
+        .admin-btn.accent {
+            background-color: var(--accent-color);
+            color: var(--sa-black);
+        }
+        
+        .admin-btn.accent:hover {
+            background-color: #e0a010;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        
+        .admin-tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-color);
+            white-space: nowrap;
+        }
+        
+        .admin-tab:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .admin-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .admin-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .admin-tab-content {
+            display: none;
+            padding: 2rem;
+        }
+        
+        .admin-tab-content.active {
+            display: block;
+        }
+        
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .admin-stat-card {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .admin-stat-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-stat-card h3 {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .admin-stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin: 0.5rem 0;
+        }
+        
+        .admin-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-controls {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .admin-search {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            min-width: 250px;
+        }
+        
+        .admin-table-container {
+            overflow-x: auto;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-table th, 
+        .admin-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        .admin-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .admin-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+        
+        .admin-action-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .admin-action-btn.delete-user:hover {
+            color: #d32f2f;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #777;
+        }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .admin-modal-content {
+            background-color: white;
+            margin: 10vh auto;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .admin-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .admin-modal h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        
+        .admin-recent-activity {
+            margin-top: 2rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-time {
+            min-width: 180px;
+            color: #777;
+        }
+        
+        .activity-user {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .admin-access-denied {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        
+        .admin-access-denied i {
+            font-size: 3rem;
+            color: #d32f2f;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-access-denied h3 {
+            color: #d32f2f;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-import-export {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .admin-import, .admin-export {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+        
+        .import-result, .export-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            background-color: #f0f0f0;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .admin-stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .admin-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .admin-controls {
+                width: 100%;
+            }
+            
+            .admin-search {
+                flex-grow: 1;
+            }
+        }
+    </style>
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <div class="header-container">
+            <h2>Admin Dashboard</h2>
+            <p>Manage users, petitions, and data for Accountability SA</p>
+        </div>
+    </section>
+
+    <section class="admin-container">
+        <div id="admin-dashboard">
+            <!-- Admin dashboard content will be loaded here via JavaScript -->
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading admin dashboard...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Accountability SA</h3>
+                <p>A non-partisan platform dedicated to promoting transparency, accountability, and civic engagement in South Africa's governance.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 21 123 4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Accountability SA. All rights reserved.</p>
+            <p><a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-of-service.html">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Helper function to promote user to admin role
+        function promoteToAdmin() {
+            if (confirm('This will promote the current user to admin role. Continue?')) {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    alert('You must be logged in to use this feature.');
+                    return;
+                }
+                
+                // Initialize database if not already
+                if (typeof AccountabilityDB === 'undefined') {
+                    alert('Database not initialized. Please reload the page.');
+                    return;
+                }
+                
+                // Get current user
+                const user = AccountabilityDB.users.get(userId);
+                if (!user) {
+                    // Create user if not exists
+                    const newUser = {
+                        id: userId,
+                        name: localStorage.getItem('userName') || 'Admin User',
+                        email: localStorage.getItem('userEmail') || '',
+                        role: 'admin'
+                    };
+                    
+                    AccountabilityDB.users.create(newUser);
+                } else {
+                    // Update existing user to admin
+                    AccountabilityDB.users.update(userId, { role: 'admin' });
+                }
+                
+                alert('Admin access granted! The page will now reload.');
+                location.reload();
+            }
+        }
+        
+        // Add secret key combo to promote to admin
+        let keySequence = [];
+        const adminCode = ['a','d','m','i','n'];
+        
+        document.addEventListener('keydown', function(e) {
+            keySequence.push(e.key.toLowerCase());
+            if (keySequence.length > adminCode.length) {
+                keySequence.shift();
+            }
+            
+            if (keySequence.join('') === adminCode.join('')) {
+                promoteToAdmin();
+            }
+        });
+    </script>
+    <script src="js/footer.js"></script>
+</body>
+</html> 
+

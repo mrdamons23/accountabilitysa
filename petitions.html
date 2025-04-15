@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petitions | Accountability SA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/petitions.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Auth scripts should be loaded first -->
+    <script src="js/auth.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/profile-utils.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Accountability SA Logo" class="logo">
+            <h1>Accountability SA</h1>
+        </div>
+        <nav>
+            <ul class="main-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                <li><a href="petitions.html" class="active">Petitions</a></li>
+                <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                <li><a href="small-businesses.html">Small Businesses</a></li>
+                <li><a href="about.html">Manifesto</a></li>
+                <li class="account-nav-item"><a href="login.html"><i class="fas fa-user-circle"></i> Login</a></li>
+            </ul>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main class="petitions-container">
+        <section class="petitions-hero">
+            <div class="petitions-hero-content">
+                <h1>Make Your Voice Heard</h1>
+                <p>Join fellow South Africans in advocating for transparency, accountability, and positive change through our petition platform.</p>
+                <div class="petition-hero-cta">
+                    <a href="#create-petition" class="btn-create-petition" id="btn-create-petition"><i class="fas fa-plus-circle"></i> Create a Petition</a>
+                    <div class="petition-stats">
+                        <div class="petition-stat">
+                            <span class="stat-number" id="total-petitions">3</span>
+                            <span class="stat-label">Active Petitions</span>
+                        </div>
+                        <div class="petition-stat">
+                            <span class="stat-number" id="total-signatures">0</span>
+                            <span class="stat-label">Total Signatures</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="petitions-filter">
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" placeholder="Search petitions..." id="petition-search">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filter-options">
+                    <select id="filter-category">
+                        <option value="all">All Categories</option>
+                        <option value="economy">Economy</option>
+                        <option value="governance">Governance</option>
+                        <option value="environment">Environment</option>
+                        <option value="education">Education</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="infrastructure">Infrastructure</option>
+                    </select>
+                    <select id="filter-sort">
+                        <option value="newest">Newest First</option>
+                        <option value="popular">Most Signatures</option>
+                        <option value="closing-soon">Closing Soon</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="petitions-list-section">
+            <h2 class="section-title">Featured Petitions</h2>
+            <p class="section-subtitle">Sign these petitions to support important initiatives for South Africa's future</p>
+            
+            <div class="petitions-grid" id="petitions-list">
+                <!-- Petitions will be loaded dynamically by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Create Petition Section (Hidden by default, shown when user clicks "Create a Petition") -->
+        <section class="create-petition-section" id="create-petition-section" style="display: none;">
+            <h2 class="section-title">Create a Petition</h2>
+            <p class="section-subtitle">Make your voice heard by starting a petition for a cause you care about</p>
+            
+            <form id="create-petition-form" class="create-petition-form">
+                <div class="form-group">
+                    <label for="petition-title">Petition Title</label>
+                    <input type="text" id="petition-title" name="title" placeholder="Write a clear, attention-grabbing title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-category">Category</label>
+                    <select id="petition-category" name="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="economy">Economy</option>
+                        <option value="governance">Governance</option>
+                        <option value="environment">Environment</option>
+                        <option value="education">Education</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="infrastructure">Infrastructure</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-summary">Short Summary</label>
+                    <input type="text" id="petition-summary" name="summary" placeholder="A brief one-line summary of your petition" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-description">Full Description</label>
+                    <textarea id="petition-description" name="description" rows="6" placeholder="Describe your petition in detail. Explain why this issue matters and what change you're seeking." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-target">Target Decision Maker</label>
+                    <input type="text" id="petition-target" name="target" placeholder="Who can make this change happen? (e.g. Department of Energy, Parliament, etc.)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-goal">Signature Goal</label>
+                    <input type="number" id="petition-goal" name="goal" min="100" max="1000000" placeholder="How many signatures are you aiming for?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-deadline">Deadline</label>
+                    <input type="date" id="petition-deadline" name="deadline" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petition-image">Cover Image</label>
+                    <input type="file" id="petition-image" name="image" accept="image/*">
+                    <p class="form-help">Choose an image that represents your petition. Recommended size: 1200x630px.</p>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="btn-cancel-petition" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Create Petition</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Login Required Modal (Shown when unauthenticated user tries to sign a petition) -->
+        <div class="auth-modal" id="auth-modal">
+            <div class="auth-modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="auth-modal-header">
+                    <i class="fas fa-user-lock"></i>
+                    <h3>Account Required</h3>
+                </div>
+                <p>You need to be logged in to sign petitions or create your own. This helps us ensure petition integrity and prevents duplicate signatures.</p>
+                <div class="auth-modal-buttons">
+                    <a href="login.html" class="btn-auth-modal">Log In</a>
+                    <a href="signup.html" class="btn-auth-modal secondary">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Accountability SA</h3>
+                <p>Empowering South African citizens through transparency, accountability, and active participation.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="corruption-tracker.html">Corruption Tracker</a></li>
+                    <li><a href="budget-monitor.html">Budget Monitor</a></li>
+                    <li><a href="petitions.html">Petitions</a></li>
+                    <li><a href="public-sentiment.html">Public Sentiment</a></li>
+                    <li><a href="small-businesses.html">Small Businesses</a></li>
+                    <li><a href="about.html">Manifesto</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@accountabilitysa.org</p>
+                <p><i class="fas fa-phone"></i> +27 (0)12 345 6789</p>
+                <p><i class="fas fa-map-marker-alt"></i> Cape Town, South Africa</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest updates on accountability initiatives.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Accountability SA. All rights reserved.</p>
+            <div class="footer-legal-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/petitions.js"></script>
+</body>
+</html> 
